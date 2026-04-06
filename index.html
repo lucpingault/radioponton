@@ -672,7 +672,7 @@
     const subject = document.getElementById('cf-sujet').value;
     const message = document.getElementById('cf-message').value.trim();
 
-    if (!name || !email || !message) {
+    if (!name || !email || !subject || !message) {
       fb.textContent = '✗ Veuillez remplir tous les champs obligatoires.';
       fb.className = 'text-sm py-2.5 px-4 rounded-md bg-error-container text-error';
       return;
@@ -685,10 +685,14 @@
     try {
       const res = await fetch('https://n8n.srv898284.hstgr.cloud/webhook/radioponton-contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message })
+        body: new URLSearchParams({ name, email, subject, message })
       });
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        fb.textContent = '✗ ' + (data.message || 'Erreur lors de l\'envoi. Réessayez.');
+        fb.className = 'text-sm py-2.5 px-4 rounded-md bg-error-container text-error';
+        return;
+      }
       fb.textContent = '✓ Message envoyé — nous vous répondrons rapidement !';
       fb.className = 'text-sm py-2.5 px-4 rounded-md bg-surface-container-high text-secondary';
       e.target.reset();
