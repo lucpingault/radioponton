@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Politique de Confidentialité — Radio Ponton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:   #08111F;
+      --deep:   #0D1E3A;
+      --royal:  #2B5FC7;
+      --amber:  #F5A83C;
+      --gold:   #C8963E;
+      --cream:  #F0EDE4;
+      --muted:  #8FA3B8;
+      --border: rgba(245,168,60,0.18);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      background: var(--navy);
+      color: var(--cream);
+      overflow-x: hidden;
+      line-height: 1.8;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 3rem;
+      background: rgba(8,17,31,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 3px;
+      text-decoration: none;
+    }
+    .nav-logo span:first-child { color: var(--royal); }
+    .nav-logo span:last-child  { color: var(--amber); }
+    .nav-back {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--amber); }
+
+    /* HERO */
+    .hero {
+      padding: 120px 0 60px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--deep) 0%, var(--navy) 100%);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(43,95,199,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: var(--royal);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      letter-spacing: 4px;
+      color: var(--cream);
+      line-height: 1;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--amber);
+    }
+    .hero-date {
+      margin-top: 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+
+    /* CONTENT */
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 60px 2rem 100px;
+    }
+
+    /* INTRO BOX */
+    .intro-box {
+      background: rgba(43,95,199,0.08);
+      border: 1px solid rgba(43,95,199,0.25);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .intro-box p {
+      font-size: 1.05rem;
+      color: rgba(240,237,228,0.85);
+      line-height: 1.75;
+    }
+
+    /* SECTIONS */
+    .section {
+      margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(245,168,60,0.1);
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+    .section-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      color: var(--cream);
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+    .section h2 span { color: var(--amber); }
+    .section p {
+      font-size: 1rem;
+      color: rgba(240,237,228,0.8);
+      margin-bottom: 12px;
+    }
+    .section ul {
+      list-style: none;
+      margin: 12px 0;
+    }
+    .section ul li {
+      font-size: 1rem;
+      color: rgba(240,237,228,0.8);
+      padding: 6px 0 6px 20px;
+      position: relative;
+    }
+    .section ul li::before {
+      content: '⚓';
+      position: absolute;
+      left: 0;
+      font-size: 0.65rem;
+      top: 9px;
+      opacity: 0.6;
+    }
+    .section ul li strong { color: var(--cream); }
+
+    /* HIGHLIGHT BOX */
+    .highlight {
+      background: rgba(245,168,60,0.06);
+      border-left: 3px solid var(--amber);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .highlight p {
+      margin-bottom: 0;
+      font-size: 0.95rem;
+    }
+
+    /* CONTACT CARD */
+    .contact-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-top: 16px;
+    }
+    .contact-card p {
+      margin-bottom: 6px;
+    }
+    .contact-card a {
+      color: var(--amber);
+      text-decoration: none;
+    }
+    .contact-card a:hover { text-decoration: underline; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--deep);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+    .footer-logo span:first-child { color: var(--royal); }
+    .footer-logo span:last-child  { color: var(--amber); }
+    footer p {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--amber); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span>RADIO</span> <span>PONTON</span>
+    </a>
+    <a href="index.html" class="nav-back">← Retour au site</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Données personnelles · RGPD</div>
+    <h1>POLITIQUE DE<br><em>CONFIDENTIALITÉ</em></h1>
+    <div class="hero-date">Dernière mise à jour : Avril 2026</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="container">
+
+    <div class="intro-box">
+      <p>Radio Ponton s'engage à protéger votre vie privée. Cette politique explique quelles données nous collectons, pourquoi, comment nous les utilisons, et quels sont vos droits. Elle s'applique au site <strong>radioponton.net</strong> et à l'application mobile <strong>Radio Ponton</strong> (iOS &amp; Android).</p>
+    </div>
+
+    <!-- 1 -->
+    <div class="section">
+      <div class="section-number">Article 01</div>
+      <h2>RESPONSABLE DU <span>TRAITEMENT</span></h2>
+      <p>Le responsable du traitement des données personnelles est :</p>
+      <div class="contact-card">
+        <p><strong>Radio Ponton — Webradio des gens de mer</strong></p>
+        <p>Responsable : Luc Pingault</p>
+        <p>Site web : <a href="https://radioponton.net">radioponton.net</a></p>
+        <p>Contact : <a href="https://radioponton.net#contact">radioponton.net/#contact</a></p>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="section">
+      <div class="section-number">Article 02</div>
+      <h2>DONNÉES <span>COLLECTÉES</span></h2>
+      <p>Radio Ponton collecte uniquement les données strictement nécessaires à son fonctionnement.</p>
+
+      <p><strong>Via le formulaire de contact (site web &amp; application) :</strong></p>
+      <ul>
+        <li><strong>Nom</strong> — pour personnaliser la réponse</li>
+        <li><strong>Adresse e-mail</strong> — pour vous répondre</li>
+        <li><strong>Message</strong> — contenu de votre demande</li>
+      </ul>
+
+      <p><strong>Via l'application mobile :</strong></p>
+      <ul>
+        <li><strong>Jeton de notification push</strong> — identifiant technique anonyme généré par votre appareil, utilisé uniquement pour vous envoyer des alertes lors de la publication de nouveaux épisodes. Aucun nom ni e-mail n'y est associé.</li>
+      </ul>
+
+      <div class="highlight">
+        <p>Radio Ponton ne collecte pas de données de localisation, ne suit pas votre comportement de navigation, et ne crée pas de profil utilisateur.</p>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="section">
+      <div class="section-number">Article 03</div>
+      <h2>FINALITÉ DU <span>TRAITEMENT</span></h2>
+      <p>Les données collectées sont utilisées exclusivement pour :</p>
+      <ul>
+        <li><strong>Répondre à vos messages</strong> — les données du formulaire de contact sont transmises par e-mail à l'équipe de Radio Ponton via un système d'automatisation sécurisé (n8n). Elles ne sont pas stockées dans une base de données.</li>
+        <li><strong>Envoyer des notifications push</strong> — uniquement si vous avez accepté les notifications lors de l'installation de l'application. Vous pouvez retirer ce consentement à tout moment dans les paramètres de votre appareil.</li>
+      </ul>
+      <p>Base légale : <strong>intérêt légitime</strong> (réponse aux demandes de contact) et <strong>consentement</strong> (notifications push).</p>
+    </div>
+
+    <!-- 4 -->
+    <div class="section">
+      <div class="section-number">Article 04</div>
+      <h2>DURÉE DE <span>CONSERVATION</span></h2>
+      <ul>
+        <li><strong>Messages de contact</strong> — conservés dans la boîte mail de Radio Ponton le temps nécessaire au traitement de votre demande, puis supprimés.</li>
+        <li><strong>Jetons de notification push</strong> — conservés tant que l'application est installée sur votre appareil. Supprimés automatiquement en cas de désinstallation ou de retrait du consentement.</li>
+      </ul>
+    </div>
+
+    <!-- 5 -->
+    <div class="section">
+      <div class="section-number">Article 05</div>
+      <h2>PARTAGE DES <span>DONNÉES</span></h2>
+      <p>Radio Ponton <strong>ne vend jamais vos données personnelles</strong> à des tiers et ne les partage avec aucun partenaire commercial.</p>
+      <p>Les seuls sous-traitants techniques impliqués sont :</p>
+      <ul>
+        <li><strong>Expo (Notifications push)</strong> — service d'envoi de notifications, fournisseur : Expo.dev. Seul le jeton anonyme de l'appareil leur est transmis.</li>
+        <li><strong>n8n (Automatisation)</strong> — routage des messages du formulaire de contact vers l'e-mail de Radio Ponton. Hébergé sur un serveur privé.</li>
+        <li><strong>Ausha (Podcasts)</strong> — hébergement des épisodes. Les épisodes sont accessibles publiquement via flux RSS.</li>
+        <li><strong>VestaRadio (Diffusion live)</strong> — service de streaming audio. La connexion au flux est anonyme.</li>
+      </ul>
+    </div>
+
+    <!-- 6 -->
+    <div class="section">
+      <div class="section-number">Article 06</div>
+      <h2>COOKIES &amp; <span>TRACEURS</span></h2>
+      <p>Le site <strong>radioponton.net</strong> n'utilise pas de cookies de traçage, de publicité ou d'analyse comportementale.</p>
+      <p>L'<strong>application mobile</strong> ne collecte aucune donnée analytique et n'intègre aucun SDK publicitaire.</p>
+      <div class="highlight">
+        <p>Aucun cookie tiers n'est déposé sur votre appareil lors de la navigation sur Radio Ponton.</p>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="section">
+      <div class="section-number">Article 07</div>
+      <h2>VOS <span>DROITS</span></h2>
+      <p>Conformément au Règlement Général sur la Protection des Données (RGPD — UE 2016/679), vous disposez des droits suivants :</p>
+      <ul>
+        <li><strong>Droit d'accès</strong> — obtenir une copie des données vous concernant</li>
+        <li><strong>Droit de rectification</strong> — corriger des données inexactes</li>
+        <li><strong>Droit à l'effacement</strong> — demander la suppression de vos données</li>
+        <li><strong>Droit d'opposition</strong> — vous opposer à un traitement</li>
+        <li><strong>Droit à la portabilité</strong> — recevoir vos données dans un format structuré</li>
+        <li><strong>Droit de retrait du consentement</strong> — pour les notifications push, directement dans les réglages de votre appareil</li>
+      </ul>
+      <p>Pour exercer ces droits, contactez-nous via le formulaire disponible sur le site ou l'application. Nous nous engageons à répondre dans un délai de 30 jours.</p>
+      <p>Vous pouvez également introduire une réclamation auprès de la <strong>CNIL</strong> : <a href="https://www.cnil.fr" style="color:var(--amber)">www.cnil.fr</a></p>
+    </div>
+
+    <!-- 8 -->
+    <div class="section">
+      <div class="section-number">Article 08</div>
+      <h2>SÉCURITÉ DES <span>DONNÉES</span></h2>
+      <p>Radio Ponton met en œuvre les mesures techniques appropriées pour protéger vos données contre tout accès non autorisé, perte ou divulgation :</p>
+      <ul>
+        <li>Transmission des données de contact via <strong>HTTPS</strong> chiffré</li>
+        <li>Serveur d'automatisation hébergé sur infrastructure privée sécurisée</li>
+        <li>Aucun stockage en base de données des messages de contact</li>
+      </ul>
+    </div>
+
+    <!-- 9 -->
+    <div class="section">
+      <div class="section-number">Article 09</div>
+      <h2>MODIFICATIONS DE LA <span>POLITIQUE</span></h2>
+      <p>Cette politique de confidentialité peut être mise à jour pour refléter l'évolution de l'application ou de la réglementation. La date de dernière mise à jour est indiquée en haut de cette page.</p>
+      <p>En cas de modification substantielle, une notification sera affichée sur le site ou dans l'application.</p>
+    </div>
+
+    <!-- 10 -->
+    <div class="section">
+      <div class="section-number">Article 10</div>
+      <h2>NOUS <span>CONTACTER</span></h2>
+      <p>Pour toute question relative à cette politique ou pour exercer vos droits :</p>
+      <div class="contact-card">
+        <p>Utilisez le formulaire de contact disponible sur</p>
+        <p><a href="https://radioponton.net/#contact">radioponton.net/#contact</a></p>
+        <p style="margin-top:10px;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:1px">Réponse garantie sous 30 jours</p>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <span>RADIO</span> <span>PONTON</span>
+    </div>
+    <p>La radio des gens de mer &nbsp;·&nbsp; <a href="index.html">Retour au site</a></p>
+    <p style="margin-top:8px">© 2026 Radio Ponton — Tous droits réservés</p>
+  </footer>
+
+</body>
+</html>

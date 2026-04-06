@@ -1,0 +1,17 @@
+# Fichiers système macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Anciens mockups (ne pas déployer)
+mockup-*.html
+RESUME_SESSION_RADIOPONTON.md
+
+# Dossier Stitch (design source, pas à déployer)
+stitch/
+
+# Fichier logo avec espaces (remplacé par logo-transparent.png)
+Logo transparent.png
+LOGO radio ponton.png

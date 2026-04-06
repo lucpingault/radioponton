@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="description" content="Radio Ponton — La webradio des gens de mer. Émissions nautiques, podcasts et direct live 24h/24."/>
+  <meta name="theme-color" content="#0b1422"/>
+  <title>Radio Ponton — La Radio des Gens de Mer</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed-dim": "#ffb95d",
+            "tertiary": "#c9c6be",
+            "background": "#0b1422",
+            "outline": "#8d909e",
+            "surface-container": "#17202e",
+            "surface-tint": "#b1c5ff",
+            "error-container": "#93000a",
+            "primary-container": "#2b5fc7",
+            "inverse-surface": "#dae3f7",
+            "surface-container-lowest": "#060e1c",
+            "on-tertiary-container": "#e6e3da",
+            "on-background": "#dae3f7",
+            "secondary-container": "#c78213",
+            "surface-container-low": "#131c2a",
+            "on-surface": "#dae3f7",
+            "on-error-container": "#ffdad6",
+            "on-surface-variant": "#c3c6d5",
+            "tertiary-container": "#66655e",
+            "surface-variant": "#2c3544",
+            "surface": "#0b1422",
+            "on-secondary": "#472a00",
+            "on-primary": "#002c71",
+            "on-primary-container": "#d9e1ff",
+            "surface-container-high": "#222a39",
+            "primary": "#b1c5ff",
+            "on-secondary-container": "#3d2400",
+            "secondary": "#ffb95d",
+            "surface-container-highest": "#2c3544",
+            "surface-dim": "#0b1422",
+            "secondary-fixed": "#ffddb7",
+            "outline-variant": "#434653",
+            "surface-bright": "#313949",
+            "error": "#ffb4ab",
+            "primary-fixed": "#dae2ff",
+            "on-tertiary": "#31312b"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "sm": "0.125rem",
+            "md": "0.25rem",
+            "lg": "0.375rem",
+            "xl": "0.5rem",
+            "2xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Noto Serif", "Georgia", "serif"],
+            "body": ["Space Grotesk", "sans-serif"],
+            "label": ["Space Grotesk", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.22;
+    }
+
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #060e1c; }
+    ::-webkit-scrollbar-thumb { background: #ffb95d; border-radius: 3px; }
+
+    @keyframes ticker-run {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track { animation: ticker-run 40s linear infinite; white-space: nowrap; display: inline-flex; }
+    .ticker-track:hover { animation-play-state: paused; }
+
+    @keyframes pulse-amber {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+    .dot-live { animation: pulse-amber 1.8s ease-in-out infinite; }
+
+    .vesta-glow { box-shadow: 0 0 60px rgba(255,185,93,0.12), 0 20px 60px rgba(0,0,0,0.6); }
+
+    /* Slot hover */
+    .prog-slot:hover { background: rgba(255,185,93,0.05); }
+
+    /* Fade-up entrance */
+    @keyframes fade-up { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    .fade-up { opacity:0; animation: fade-up 0.7s ease forwards; }
+
+    @media (max-width: 768px) {
+      .prog-cols { grid-template-columns: repeat(3,1fr) !important; }
+    }
+    @media (max-width: 480px) {
+      .prog-cols { grid-template-columns: repeat(2,1fr) !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-background text-on-background font-body overflow-x-hidden selection:bg-secondary selection:text-on-secondary pb-16 md:pb-0">
+
+<!-- ═══ NAV ═══════════════════════════════════════════════ -->
+<nav class="fixed top-0 left-0 right-0 z-50 h-20 bg-surface-container-lowest/85 backdrop-blur-xl border-b border-outline-variant/15">
+  <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3 shrink-0">
+      <img src="logo-transparent.png" alt="Radio Ponton" class="h-10 object-contain drop-shadow"/>
+      <span class="font-headline text-xl font-bold italic text-on-surface hidden sm:block">Radio <span class="text-secondary">Ponton</span></span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-7">
+      <a href="index.html" class="font-label text-xs uppercase tracking-widest text-secondary font-bold border-b border-secondary pb-px">Accueil</a>
+      <a href="programme.html" class="font-label text-xs uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors duration-200">Programme</a>
+      <a href="podcasts.html" class="font-label text-xs uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors duration-200">Podcasts</a>
+      <a href="boutique.html" class="font-label text-xs uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors duration-200">Boutique</a>
+      <a href="#contact" class="font-label text-xs uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors duration-200">Contact</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span class="dot-live inline-flex h-2.5 w-2.5 rounded-full bg-secondary shrink-0"></span>
+      <span class="font-label text-xs uppercase tracking-widest text-secondary hidden sm:block">En Direct</span>
+      <button id="nav-toggle" class="md:hidden p-2 rounded-md hover:bg-surface-container transition-colors ml-1" aria-label="Menu">
+        <span class="material-symbols-outlined text-on-surface-variant">menu</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-surface-container-lowest border-t border-outline-variant/10 px-6 py-5">
+    <div class="flex flex-col gap-4">
+      <a href="index.html" class="font-label text-sm uppercase tracking-widest text-secondary">Accueil</a>
+      <a href="programme.html" class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Programme</a>
+      <a href="podcasts.html" class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Podcasts</a>
+      <a href="boutique.html" class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Boutique</a>
+      <a href="#contact" class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ AUSHA TICKER ═══════════════════════════════════════ -->
+<div id="ausha-ticker" class="fixed top-20 left-0 right-0 z-40 h-9 bg-surface-container-low/90 backdrop-blur-md border-b border-secondary/15 overflow-hidden flex items-center">
+  <div class="shrink-0 flex items-center gap-2 px-4 h-full border-r border-secondary/20 bg-secondary/5">
+    <span class="relative flex h-2 w-2 shrink-0">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+    </span>
+    <span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold whitespace-nowrap">Nouveau à bord</span>
+  </div>
+  <div class="flex-1 overflow-hidden">
+    <div class="ticker-track" id="ticker-content">
+      <span class="font-label text-xs text-on-surface-variant px-8" id="ticker-text">
+        🎙️ Livre de Bord · Cap &amp; Micro · Helm &amp; Mike · À Poste · Veillée de Mouillage — Nouveaux épisodes disponibles sur Radio Ponton &nbsp;&nbsp;•&nbsp;&nbsp; 🎙️ Livre de Bord · Cap &amp; Micro · Helm &amp; Mike · À Poste · Veillée de Mouillage — Nouveaux épisodes disponibles sur Radio Ponton &nbsp;&nbsp;•&nbsp;&nbsp;
+      </span>
+    </div>
+  </div>
+  <a href="podcasts.html" class="shrink-0 px-4 font-label text-[10px] uppercase tracking-widest text-secondary hover:text-secondary-fixed-dim transition-colors border-l border-secondary/20 h-full flex items-center">
+    Écouter →
+  </a>
+</div>
+
+<main class="pt-[7.25rem]">
+
+  <!-- ═══ HERO ════════════════════════════════════════════ -->
+  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-6">
+    <!-- Atmospheric background -->
+    <div class="absolute inset-0 z-0" style="background: radial-gradient(ellipse 80% 60% at 20% 30%, rgba(43,95,199,0.22) 0%, transparent 70%), radial-gradient(ellipse 60% 80% at 80% 70%, rgba(255,185,93,0.06) 0%, transparent 60%), linear-gradient(180deg, #0b1422 0%, #060e1c 100%);"></div>
+    <div class="absolute inset-0 z-0 opacity-30" style="background: radial-gradient(ellipse at 50% 100%, rgba(255,185,93,0.07) 0%, transparent 50%);"></div>
+
+    <!-- Logo watermarks desktop only -->
+    <div class="hidden lg:block absolute left-4 xl:left-12 top-1/2 -translate-y-1/2 z-0 pointer-events-none select-none">
+      <img src="logo-transparent.png" alt="" class="h-72 xl:h-96 opacity-[0.06] object-contain" aria-hidden="true"/>
+    </div>
+    <div class="hidden lg:block absolute right-4 xl:right-12 top-1/2 -translate-y-1/2 z-0 pointer-events-none select-none" style="transform:translateY(-50%) scaleX(-1);">
+      <img src="logo-transparent.png" alt="" class="h-72 xl:h-96 opacity-[0.06] object-contain" aria-hidden="true"/>
+    </div>
+
+    <!-- Ambient beam -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-2/3 z-0" style="background: linear-gradient(180deg, transparent 0%, rgba(255,185,93,0.12) 40%, transparent 100%); transform: translateX(-50%) rotate(8deg) scaleX(120);"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-8 fade-up" style="animation-delay:0.1s">
+      <div class="flex justify-center mb-6">
+        <img src="logo-transparent.png" alt="Radio Ponton" class="h-36 md:h-52 object-contain drop-shadow-2xl"/>
+      </div>
+
+      <h1 class="font-headline text-5xl md:text-7xl font-bold text-on-surface leading-tight tracking-tight">
+        Embarquez sur les<br/><em class="text-secondary">Ondes du Ponton</em>
+      </h1>
+
+      <p class="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto font-light leading-relaxed">
+        La webradio des gens de mer. Émissions nautiques, reportages &amp; interviews depuis les pontons du monde entier — bilingue FR/EN.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
+        <a href="#player" class="bg-primary-container text-on-primary-container px-9 py-4 rounded-md font-bold text-base hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2.5 shadow-lg shadow-primary-container/20">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">play_circle</span>
+          ÉCOUTER LE LIVE
+        </a>
+        <a href="podcasts.html" class="bg-surface-variant text-on-surface px-9 py-4 rounded-md font-bold text-base hover:bg-surface-container-highest transition-all flex items-center gap-2.5">
+          <span class="material-symbols-outlined">podcasts</span>
+          NOS PODCASTS
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 opacity-40">
+      <span class="font-label text-[10px] uppercase tracking-widest text-outline">Défiler</span>
+      <span class="material-symbols-outlined text-outline animate-bounce text-sm">keyboard_arrow_down</span>
+    </div>
+  </section>
+
+  <!-- ═══ PLAYER VESTARADIO ══════════════════════════════ -->
+  <section id="player" class="max-w-6xl mx-auto px-6 -mt-8 relative z-30 pb-4">
+    <div class="bg-surface-container-high rounded-xl p-8 md:p-12 relative overflow-hidden vesta-glow">
+      <!-- Grain -->
+      <div class="absolute inset-0 pointer-events-none rounded-xl opacity-[0.025]" style="background-image:url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\");"></div>
+      <!-- Amber top line -->
+      <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,rgba(255,185,93,0.5),transparent);"></div>
+
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <!-- Info -->
+        <div class="space-y-6 order-2 md:order-1">
+          <div class="flex items-center gap-3 text-secondary font-label font-bold uppercase tracking-widest text-xs">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+            </span>
+            EN DIRECT DU PONTON
+          </div>
+
+          <div>
+            <h2 class="font-headline text-4xl text-on-surface italic font-bold">Radio Ponton</h2>
+            <p class="text-on-surface-variant mt-1">Webradio des gens de mer — 24h/24, 7j/7</p>
+          </div>
+
+          <p class="text-on-surface-variant font-body leading-relaxed text-sm">
+            Jazz, folk maritime, récits de navigation et chroniques bilingues FR/EN — une escale sonore depuis les pontons du monde entier.
+          </p>
+
+          <div class="space-y-2">
+            <div class="h-px w-full" style="background:linear-gradient(90deg,rgba(255,185,93,0.25),transparent);"></div>
+            <div class="flex flex-wrap gap-4 pt-1">
+              <a href="programme.html" class="inline-flex items-center gap-1.5 text-secondary font-label text-xs uppercase tracking-widest hover:text-secondary-fixed-dim transition-colors border-b border-secondary/40 pb-0.5">
+                <span class="material-symbols-outlined text-sm">calendar_today</span>
+                Programme
+              </a>
+              <a href="podcasts.html" class="inline-flex items-center gap-1.5 text-secondary font-label text-xs uppercase tracking-widest hover:text-secondary-fixed-dim transition-colors border-b border-secondary/40 pb-0.5">
+                <span class="material-symbols-outlined text-sm">podcasts</span>
+                Podcasts
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- VestaRadio Player -->
+        <div class="flex justify-center order-1 md:order-2">
+          <div class="relative">
+            <div class="absolute -inset-4 bg-secondary/8 blur-3xl rounded-xl -z-10"></div>
+            <iframe
+              src="https://www.webradio.media/vestaplayer/big.php?radio=RADIOPONTON&server=stream4.vestaradio.com&fond=ffbd59&texte=004add&volume=50&visualizertype=2&visualizeropacity=0.06"
+              width="300"
+              height="360"
+              frameborder="0"
+              scrolling="no"
+              title="Radio Ponton — Écouter en direct"
+              loading="lazy"
+              style="border-radius:0.5rem;"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PROGRAMME APERÇU ══════════════════════════════ -->
+  <section id="programme" class="max-w-7xl mx-auto px-6 py-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div class="space-y-3">
+        <span class="font-label text-xs uppercase tracking-widest text-secondary">Grille de diffusion</span>
+        <h2 class="font-headline text-5xl font-bold text-on-surface">Journal de Bord</h2>
+        <p class="text-on-surface-variant text-lg max-w-lg">Nos émissions quotidiennes pour naviguer entre jazz, folk et récits maritimes.</p>
+      </div>
+      <div class="h-px flex-grow bg-outline-variant/15 mx-8 hidden md:block"></div>
+      <a href="programme.html" class="font-label text-xs uppercase tracking-widest text-secondary border-b border-secondary pb-0.5 hover:text-secondary-fixed-dim transition-colors self-start whitespace-nowrap shrink-0">PROGRAMME COMPLET →</a>
+    </div>
+
+    <div class="overflow-x-auto pb-4 -mx-2">
+      <div id="prog-grid-home" class="min-w-[600px] px-2"></div>
+    </div>
+  </section>
+
+  <!-- ═══ BOUTIQUE TEASER ══════════════════════════════ -->
+  <section class="bg-surface-container-low py-24 px-6">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <div class="space-y-7 order-2 md:order-1">
+        <span class="font-label text-xs uppercase tracking-widest text-secondary">Goodies</span>
+        <h2 class="font-headline text-5xl font-bold text-on-surface leading-tight">Le Comptoir<br/>du Ponton</h2>
+        <p class="text-on-surface-variant text-lg leading-relaxed">
+          Portez les couleurs de votre radio préférée. T-shirts, tote bags et affiches de collection avec l'âme du marin.
+        </p>
+        <ul class="space-y-3">
+          <li class="flex items-center gap-3 text-on-surface">
+            <span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings:'FILL' 1">check_circle</span>
+            T-shirts en coton biologique
+          </li>
+          <li class="flex items-center gap-3 text-on-surface">
+            <span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings:'FILL' 1">check_circle</span>
+            Affiches de collection numérotées
+          </li>
+          <li class="flex items-center gap-3 text-on-surface">
+            <span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings:'FILL' 1">check_circle</span>
+            Impression écoresponsable via Spreadshop
+          </li>
+        </ul>
+        <a href="boutique.html" class="inline-flex items-center gap-3 bg-secondary text-on-secondary px-8 py-4 rounded-md font-bold hover:bg-secondary-fixed-dim transition-colors group">
+          Visiter la Boutique
+          <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">shopping_cart</span>
+        </a>
+      </div>
+
+      <div class="order-1 md:order-2 relative">
+        <div class="absolute -inset-4 bg-secondary/8 rounded-xl rotate-2 -z-10"></div>
+        <div class="bg-surface-container-high rounded-xl aspect-square flex items-center justify-center relative overflow-hidden">
+          <div class="absolute inset-0 opacity-[0.02]" style="background-image:url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\");"></div>
+          <div class="text-center space-y-6 px-12 relative z-10">
+            <img src="logo-transparent.png" alt="" class="h-28 mx-auto opacity-30 grayscale" aria-hidden="true"/>
+            <p class="font-headline text-2xl italic text-on-surface-variant">Collection<br/>Radio Ponton</p>
+            <p class="font-label text-xs uppercase tracking-widest text-outline">Propulsé par Spreadshop</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COMMUNAUTÉ ══════════════════════════════════ -->
+  <section id="communaute" class="py-24 px-6 max-w-7xl mx-auto">
+    <div class="text-center space-y-4 mb-16">
+      <h2 class="font-headline text-5xl font-bold text-on-surface">Rejoignez l'Équipage</h2>
+      <p class="text-on-surface-variant text-lg">Suivez le signal sur tous nos canaux.</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <a href="https://www.instagram.com/radioponton/" target="_blank" rel="noopener noreferrer" class="bg-surface-container-high hover:bg-surface-container-highest p-8 rounded-xl text-center space-y-3 transition-all group">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-secondary transition-colors" style="font-variation-settings:'FILL' 0">photo_camera</span>
+        <h4 class="font-headline text-base font-bold">Instagram</h4>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=61553773483100" target="_blank" rel="noopener noreferrer" class="bg-surface-container-high hover:bg-surface-container-highest p-8 rounded-xl text-center space-y-3 transition-all group">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-secondary transition-colors">groups</span>
+        <h4 class="font-headline text-base font-bold">Facebook</h4>
+      </a>
+      <a href="https://www.youtube.com/@radioponton" target="_blank" rel="noopener noreferrer" class="bg-surface-container-high hover:bg-surface-container-highest p-8 rounded-xl text-center space-y-3 transition-all group">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-secondary transition-colors" style="font-variation-settings:'FILL' 1">play_circle</span>
+        <h4 class="font-headline text-base font-bold">YouTube</h4>
+      </a>
+      <a href="https://www.tiktok.com/@radio_ponton" target="_blank" rel="noopener noreferrer" class="bg-surface-container-high hover:bg-surface-container-highest p-8 rounded-xl text-center space-y-3 transition-all group">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-secondary transition-colors">music_video</span>
+        <h4 class="font-headline text-base font-bold">TikTok</h4>
+      </a>
+      <a href="podcasts.html" class="bg-surface-container-high hover:bg-surface-container-highest p-8 rounded-xl text-center space-y-3 transition-all group col-span-2 md:col-span-1">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-secondary transition-colors">podcasts</span>
+        <h4 class="font-headline text-base font-bold">Podcasts Ausha</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═════════════════════════════════════ -->
+  <section id="contact" class="py-24 px-6 bg-surface-container-lowest">
+    <div class="max-w-4xl mx-auto">
+      <div class="rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row" style="box-shadow:0 32px 80px rgba(0,0,0,0.6);">
+        <!-- Left info panel -->
+        <div class="md:w-5/12 bg-primary-container p-10 text-on-primary-container flex flex-col justify-between">
+          <div class="space-y-6">
+            <span class="font-label text-xs uppercase tracking-widest opacity-70">Contactez-nous</span>
+            <h2 class="font-headline text-4xl font-bold leading-tight">Prendre contact</h2>
+            <p class="text-on-primary-container/80 leading-relaxed">Une suggestion ? Une dédicace ? Envoyez-nous votre bouteille à la mer.</p>
+          </div>
+          <div class="space-y-3 mt-10">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-base opacity-70">mail</span>
+              <span class="text-sm font-label">bord@radioponton.fr</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-base opacity-70">anchor</span>
+              <span class="text-sm font-label">La webradio des gens de mer</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right form -->
+        <div class="md:w-7/12 bg-surface-container-low p-10 space-y-6">
+          <form id="contactForm" class="space-y-5" novalidate>
+            <div class="grid md:grid-cols-2 gap-5">
+              <div class="space-y-1.5">
+                <label for="cf-nom" class="font-label text-[10px] font-bold uppercase tracking-widest text-outline">Nom / Pseudo</label>
+                <input type="text" id="cf-nom" name="name" placeholder="Marin d'eau douce" required
+                  class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/60 focus:border-secondary focus:ring-0 text-on-surface transition-colors py-3 text-sm placeholder:text-outline/50 rounded-none"/>
+              </div>
+              <div class="space-y-1.5">
+                <label for="cf-email" class="font-label text-[10px] font-bold uppercase tracking-widest text-outline">Email</label>
+                <input type="email" id="cf-email" name="email" placeholder="votre@email.fr" required
+                  class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/60 focus:border-secondary focus:ring-0 text-on-surface transition-colors py-3 text-sm placeholder:text-outline/50 rounded-none"/>
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <label for="cf-sujet" class="font-label text-[10px] font-bold uppercase tracking-widest text-outline">Sujet</label>
+              <select id="cf-sujet" name="subject"
+                class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/60 focus:border-secondary focus:ring-0 text-on-surface transition-colors py-3 text-sm rounded-none">
+                <option value="suggestion">Suggestion musicale</option>
+                <option value="dedicace">Dédicace</option>
+                <option value="partenariat">Partenariat / Collaboration</option>
+                <option value="technique">Support technique</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div class="space-y-1.5">
+              <label for="cf-message" class="font-label text-[10px] font-bold uppercase tracking-widest text-outline">Message</label>
+              <textarea id="cf-message" name="message" rows="4" placeholder="Votre message..." required
+                class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant/60 focus:border-secondary focus:ring-0 text-on-surface transition-colors py-3 text-sm resize-none placeholder:text-outline/50 rounded-none"></textarea>
+            </div>
+            <div id="cf-feedback" class="hidden text-sm py-2.5 px-4 rounded-md" role="alert"></div>
+            <button id="cf-submit" type="submit"
+              class="w-full bg-surface-container-highest text-on-surface py-4 rounded-md font-bold text-sm hover:bg-secondary hover:text-on-secondary transition-all duration-200 tracking-wider">
+              ENVOYER LE SIGNAL
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ══════════════════════════════════════════ -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/10 pt-14 pb-8 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      <div class="space-y-5">
+        <img src="logo-transparent.png" alt="Radio Ponton" class="h-12 object-contain opacity-70"/>
+        <p class="font-label text-sm text-outline leading-relaxed max-w-xs">La webradio des gens de mer. Bilingue FR/EN, disponible en direct et en podcast sur Ausha.</p>
+      </div>
+
+      <div class="space-y-4">
+        <span class="font-label text-[10px] uppercase tracking-widest text-outline">Navigation</span>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-2">
+          <a href="index.html" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Accueil</a>
+          <a href="programme.html" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Programme</a>
+          <a href="podcasts.html" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Podcasts</a>
+          <a href="boutique.html" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Boutique</a>
+          <a href="#contact" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Contact</a>
+          <a href="politique-confidentialite.html" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Mentions légales</a>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <span class="font-label text-[10px] uppercase tracking-widest text-outline">Nos canaux</span>
+        <div class="flex gap-4 flex-wrap">
+          <a href="https://www.instagram.com/radioponton/" target="_blank" rel="noopener" class="text-outline hover:text-secondary transition-colors" aria-label="Instagram">
+            <span class="material-symbols-outlined">photo_camera</span>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61553773483100" target="_blank" rel="noopener" class="text-outline hover:text-secondary transition-colors" aria-label="Facebook">
+            <span class="material-symbols-outlined">groups</span>
+          </a>
+          <a href="https://www.youtube.com/@radioponton" target="_blank" rel="noopener" class="text-outline hover:text-secondary transition-colors" aria-label="YouTube">
+            <span class="material-symbols-outlined">play_circle</span>
+          </a>
+          <a href="https://www.tiktok.com/@radio_ponton" target="_blank" rel="noopener" class="text-outline hover:text-secondary transition-colors" aria-label="TikTok">
+            <span class="material-symbols-outlined">music_video</span>
+          </a>
+          <a href="https://www.linkedin.com/in/radio-ponton-webradio-9727943b4/" target="_blank" rel="noopener" class="text-outline hover:text-secondary transition-colors" aria-label="LinkedIn">
+            <span class="material-symbols-outlined">work</span>
+          </a>
+        </div>
+        <p class="font-label text-xs text-outline/50">Diffusion : VestaRadio · Podcasts : Ausha<br/>Goodies : Spreadshop</p>
+      </div>
+    </div>
+
+    <div class="border-t border-outline-variant/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3 text-outline/30">
+        <span class="material-symbols-outlined text-sm">waves</span>
+        <span class="material-symbols-outlined text-sm">anchor</span>
+        <span class="material-symbols-outlined text-sm">sailing</span>
+      </div>
+      <p class="font-label text-xs text-outline/50 text-center">© 2024 Radio Ponton — Tous droits réservés</p>
+      <a href="politique-confidentialite.html" class="font-label text-xs text-outline/50 hover:text-secondary transition-colors">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ MOBILE BOTTOM NAV ══════════════════════════════ -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 bg-surface-container-lowest/95 backdrop-blur-lg border-t border-outline-variant/10 flex items-center justify-around px-2">
+  <a href="index.html" class="flex flex-col items-center gap-0.5 text-secondary py-1 px-3">
+    <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">radio</span>
+    <span class="font-label text-[9px] uppercase tracking-widest">Live</span>
+  </a>
+  <a href="programme.html" class="flex flex-col items-center gap-0.5 text-on-surface-variant/60 hover:text-on-surface transition-colors py-1 px-3">
+    <span class="material-symbols-outlined text-xl">calendar_today</span>
+    <span class="font-label text-[9px] uppercase tracking-widest">Programme</span>
+  </a>
+  <a href="podcasts.html" class="flex flex-col items-center gap-0.5 text-on-surface-variant/60 hover:text-on-surface transition-colors py-1 px-3">
+    <span class="material-symbols-outlined text-xl">podcasts</span>
+    <span class="font-label text-[9px] uppercase tracking-widest">Podcasts</span>
+  </a>
+  <a href="boutique.html" class="flex flex-col items-center gap-0.5 text-on-surface-variant/60 hover:text-on-surface transition-colors py-1 px-3">
+    <span class="material-symbols-outlined text-xl">shopping_bag</span>
+    <span class="font-label text-[9px] uppercase tracking-widest">Boutique</span>
+  </a>
+</div>
+
+<!-- ═══ SCRIPTS ══════════════════════════════════════ -->
+<script>
+  // ── Mobile menu ──────────────────────────────────────────
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+  });
+
+  // ── Ausha ticker ─────────────────────────────────────────
+  // ⚙️ CONFIGURATION : remplacez ci-dessous par l'URL RSS de votre show Ausha
+  // Disponible dans : Ausha > Votre émission > Distribution > Flux RSS
+  const AUSHA_RSS_URL = 'https://feed.ausha.co/B621lqFONl26';
+
+  async function loadAushaTicker() {
+    if (!AUSHA_RSS_URL) return; // Garde le texte statique par défaut
+    try {
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(AUSHA_RSS_URL)}&count=6`;
+      const res = await fetch(apiUrl, { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.status !== 'ok' || !data.items?.length) return;
+
+      const titles = data.items.map(ep => `🎙️ ${ep.title}`).join('  ·  ');
+      const fullText = titles + '  —  ' + titles; // double pour boucle fluide
+      const el = document.getElementById('ticker-text');
+      el.textContent = fullText;
+    } catch (_) {
+      // Garde le fallback statique
+    }
+  }
+  loadAushaTicker();
+
+  // ── Programme de la semaine ───────────────────────────────
+  const DAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const DAYS_FULL = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+  const vhf = [
+    { time:'06:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news' },
+    { time:'10:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news' },
+    { time:'14:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news' },
+    { time:'22:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news' },
+  ];
+  const aPo  = [...vhf, { time:'12:00', title:'À Poste', host:'Magazine nautique · FR', tag:'mag' }, { time:'20:00', title:'À Poste', host:'Magazine · EN', tag:'mag' }];
+  const liv  = [...vhf, { time:'12:00', title:'Livre de Bord', host:'Récit · FR', tag:'serie' }, { time:'20:00', title:'Livre de Bord', host:'Récit · EN', tag:'serie' }];
+  const sam  = [...vhf, { time:'12:00', title:'Livre de Bord', host:'Récit · FR', tag:'serie' }, { time:'19:30', title:'Veillée de Mouillage', host:'Table ronde · FR', tag:'live' }, { time:'20:00', title:'Livre de Bord', host:'Récit · EN', tag:'serie' }];
+  const dim  = [...vhf, { time:'10:30', title:'Cap & Micro', host:'Interview · FR', tag:'interview' }, { time:'17:30', title:'Helm & Mike', host:'Interview · EN', tag:'interview' }, { time:'20:00', title:'Le Hublot', host:'Météo & routage · FR', tag:'meteo' }];
+  const PROG = [aPo, liv, aPo, liv, aPo, sam, dim];
+
+  const TAG_COLOR = {
+    news:'text-outline', mag:'text-primary', serie:'text-secondary',
+    live:'text-green-400', interview:'text-on-surface-variant', meteo:'text-tertiary'
+  };
+
+  function buildHomeGrid() {
+    const el = document.getElementById('prog-grid-home');
+    if (!el) return;
+    const today = new Date();
+    const dow = today.getDay();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+    const nowMin = today.getHours() * 60 + today.getMinutes();
+
+    el.innerHTML = `<div class="grid prog-cols" style="grid-template-columns:repeat(7,1fr);gap:4px;">
+      ${DAYS.map((d, i) => {
+        const dt = new Date(monday);
+        dt.setDate(monday.getDate() + i);
+        const isToday = dt.toDateString() === today.toDateString();
+        const dateStr = dt.getDate().toString().padStart(2,'0') + '/' + (dt.getMonth()+1).toString().padStart(2,'0');
+        const slots = [...PROG[i]].sort((a,b) => a.time.localeCompare(b.time));
+
+        return `<div class="rounded-md overflow-hidden ${isToday ? 'ring-1 ring-secondary/40 bg-surface-container' : 'bg-surface-container-low'}">
+          <div class="px-2 py-1.5 text-center ${isToday ? 'bg-secondary/15' : 'bg-surface-container-low/80'}">
+            <div class="font-label text-[9px] uppercase tracking-wider font-bold ${isToday ? 'text-secondary' : 'text-outline'}">${d}</div>
+            <div class="font-label text-[8px] text-outline/50">${dateStr}</div>
+          </div>
+          ${slots.map(s => {
+            const [sh,sm] = s.time.split(':').map(Number);
+            const slotMin = sh * 60 + sm;
+            const isNow = isToday && nowMin >= slotMin && nowMin < slotMin + 120;
+            return `<div class="prog-slot px-1.5 py-1.5 border-t border-outline-variant/10 cursor-default ${isNow ? 'bg-secondary/10' : ''}">
+              <div class="font-label text-[8px] text-outline/60">${s.time}</div>
+              <div class="font-headline text-[9px] font-bold text-on-surface leading-tight mt-0.5">${s.title}</div>
+              ${isNow ? '<div class="flex items-center gap-1 mt-0.5"><span class="inline-flex h-1.5 w-1.5 rounded-full bg-secondary dot-live"></span><span class="font-label text-[7px] text-secondary uppercase tracking-wider">Live</span></div>' : ''}
+            </div>`;
+          }).join('')}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+  buildHomeGrid();
+
+  // ── Contact form ──────────────────────────────────────────
+  document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('cf-submit');
+    const fb  = document.getElementById('cf-feedback');
+    const name    = document.getElementById('cf-nom').value.trim();
+    const email   = document.getElementById('cf-email').value.trim();
+    const subject = document.getElementById('cf-sujet').value;
+    const message = document.getElementById('cf-message').value.trim();
+
+    if (!name || !email || !message) {
+      fb.textContent = '✗ Veuillez remplir tous les champs obligatoires.';
+      fb.className = 'text-sm py-2.5 px-4 rounded-md bg-error-container text-error';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
+    fb.className = 'hidden';
+
+    try {
+      const res = await fetch('https://n8n.srv898284.hstgr.cloud/webhook/radioponton-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message })
+      });
+      if (!res.ok) throw new Error();
+      fb.textContent = '✓ Message envoyé — nous vous répondrons rapidement !';
+      fb.className = 'text-sm py-2.5 px-4 rounded-md bg-surface-container-high text-secondary';
+      e.target.reset();
+    } catch {
+      fb.textContent = '✗ Impossible de joindre le serveur. Réessayez plus tard.';
+      fb.className = 'text-sm py-2.5 px-4 rounded-md bg-error-container text-error';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'ENVOYER LE SIGNAL';
+    }
+  });
+</script>
+</body>
+</html>
