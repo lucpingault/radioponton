@@ -12,6 +12,18 @@ RESUME_SESSION_RADIOPONTON.md
 # Dossier Stitch (design source, pas à déployer)
 stitch/
 
-# Fichier logo avec espaces (remplacé par logo-transparent.png)
+# Fichiers logo avec espaces (remplacés par logo-transparent.png)
 Logo transparent.png
 LOGO radio ponton.png
+
+# Node / npm
+logs
+*.log
+node_modules/
+.npm
+.env
+.env.*
+!.env.example
+dist
+.cache
+.parcel-cache
