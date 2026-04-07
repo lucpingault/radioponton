@@ -672,11 +672,15 @@
     const subject = document.getElementById('cf-sujet').value;
     const message = document.getElementById('cf-message').value.trim();
 
-    if (!name || !email || !subject || !message) {
-      fb.textContent = '✗ Veuillez remplir tous les champs obligatoires.';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const showErr = (msg) => {
+      fb.textContent = '✗ ' + msg;
       fb.className = 'text-sm py-2.5 px-4 rounded-md bg-error-container text-error';
-      return;
-    }
+    };
+
+    if (!name || !email || !subject || !message) return showErr('Veuillez remplir tous les champs obligatoires.');
+    if (!emailRegex.test(email)) return showErr('Adresse email invalide.');
+    if (message.length < 10) return showErr('Votre message est trop court (10 caractères minimum).');
 
     btn.disabled = true;
     btn.textContent = 'Envoi en cours…';
@@ -687,12 +691,7 @@
         method: 'POST',
         body: new URLSearchParams({ name, email, subject, message })
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        fb.textContent = '✗ ' + (data.message || 'Erreur lors de l\'envoi. Réessayez.');
-        fb.className = 'text-sm py-2.5 px-4 rounded-md bg-error-container text-error';
-        return;
-      }
+      if (!res.ok) throw new Error();
       fb.textContent = '✓ Message envoyé — nous vous répondrons rapidement !';
       fb.className = 'text-sm py-2.5 px-4 rounded-md bg-surface-container-high text-secondary';
       e.target.reset();
