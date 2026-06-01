@@ -12,8 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <!-- Ausha smartplayer — chargé une seule fois -->
-  <script src="https://player.ausha.co/ausha-player.js"></script>
 
   <script id="tailwind-config">
     tailwind.config = {
@@ -89,13 +87,18 @@
     @keyframes pulse-amber { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:0.4;transform:scale(0.7); } }
     .dot-live { animation: pulse-amber 1.8s ease-in-out infinite; }
 
-    /* Smooth anchor scroll offset (nav + ticker) */
     .emission-section { scroll-margin-top: 8rem; }
 
-    /* Ausha player wrapper — fond transparent pour s'intégrer au design sombre */
-    .ausha-player-wrap iframe {
-      border-radius: 0.5rem;
-    }
+    /* Audio player custom */
+    .rp-player { background: #0d1726; border: 1px solid rgba(67,70,83,0.4); border-radius: 0.5rem; padding: 1rem; display: flex; align-items: center; gap: 1rem; }
+    .rp-player input[type=range] { -webkit-appearance: none; appearance: none; height: 3px; background: #2c3544; border-radius: 3px; cursor: pointer; flex: 1; }
+    .rp-player input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ffb95d; cursor: pointer; }
+    .rp-player input[type=range]::-webkit-slider-runnable-track { border-radius: 3px; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-dot { width:6px; height:6px; border-radius:50%; background:#ffb95d; animation: pulse-amber 1.4s ease-in-out infinite; }
+    .loading-dot:nth-child(2) { animation-delay:.2s; }
+    .loading-dot:nth-child(3) { animation-delay:.4s; }
   </style>
 </head>
 
@@ -136,7 +139,7 @@
   </div>
 </nav>
 
-<!-- ═══ AUSHA TICKER ══════════════════════════════════════ -->
+<!-- ═══ TICKER ══════════════════════════════════════════════ -->
 <div class="fixed top-20 left-0 right-0 z-40 h-9 bg-surface-container-low/90 backdrop-blur-md border-b border-secondary/15 overflow-hidden flex items-center">
   <div class="shrink-0 flex items-center gap-2 px-4 h-full border-r border-secondary/20 bg-secondary/5">
     <span class="relative flex h-2 w-2 shrink-0">
@@ -146,7 +149,7 @@
     <span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold whitespace-nowrap">Nouveau à bord</span>
   </div>
   <div class="flex-1 overflow-hidden">
-    <div class="ticker-track">
+    <div class="ticker-track" id="ticker-track">
       <span class="font-label text-xs text-on-surface-variant px-8" id="ticker-text">
         🎙️ Livre de Bord · Cap &amp; Micro · Helm &amp; Mike · À Poste · Veillée de Mouillage — Retrouvez tous les épisodes ci-dessous &nbsp;&nbsp;•&nbsp;&nbsp; 🎙️ Livre de Bord · Cap &amp; Micro · Helm &amp; Mike · À Poste · Veillée de Mouillage — Retrouvez tous les épisodes ci-dessous &nbsp;&nbsp;•&nbsp;&nbsp;
       </span>
@@ -160,7 +163,6 @@
   <section class="relative py-20 md:py-28 px-6 overflow-hidden">
     <div class="absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 30% 40%, rgba(43,95,199,0.18) 0%, transparent 70%), linear-gradient(180deg, #0b1422 0%, #060e1c 100%);"></div>
     <div class="absolute bottom-0 left-0 right-0 h-24" style="background:linear-gradient(0deg,#0b1422,transparent);"></div>
-
     <div class="max-w-4xl mx-auto relative z-10">
       <div class="flex items-start gap-5 mb-6">
         <span class="material-symbols-outlined text-secondary text-5xl mt-1" style="font-variation-settings:'FILL' 1">podcasts</span>
@@ -172,266 +174,28 @@
       <p class="text-on-surface-variant text-xl max-w-2xl leading-relaxed mb-8">
         Retrouvez tous les épisodes de vos émissions favorites. Récits de navigation, interviews de marins et chroniques bilingues FR/EN — disponibles en replay à tout moment.
       </p>
-
-      <!-- Ancres de navigation rapide vers les émissions -->
-      <div class="flex flex-wrap gap-2">
-        <a href="#section-general" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">
-          📻 Toutes les émissions
-        </a>
-        <a href="#section-livre-de-bord" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">
-          📓 Livre de Bord
-        </a>
-        <a href="#section-cap-micro" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">
-          🎤 Cap &amp; Micro
-        </a>
-        <a href="#section-helm-mike" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">
-          🎙️ Helm &amp; Mike
-        </a>
-        <a href="#section-a-poste" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">
-          ⚓ À Poste
-        </a>
-        <a href="#section-veillee" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">
-          🌊 Veillée de Mouillage
-        </a>
+      <div class="flex flex-wrap gap-2" id="show-anchors">
+        <a href="#show-livre-de-bord" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">📓 Livre de Bord</a>
+        <a href="#show-cap-micro" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">🎤 Cap &amp; Micro</a>
+        <a href="#show-helm-mike" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">🎙️ Helm &amp; Mike</a>
+        <a href="#show-a-poste" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">⚓ À Poste</a>
+        <a href="#show-veillee" class="flex items-center gap-1.5 bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 rounded-full font-label text-xs text-on-surface-variant hover:text-secondary transition-all">🌊 Veillée de Mouillage</a>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════
-       SMARTPLAYER GÉNÉRAL — toutes les émissions
-  ════════════════════════════════════════════════════════ -->
-  <section id="section-general" class="emission-section max-w-5xl mx-auto px-6 mb-16">
-    <div class="bg-surface-container-low rounded-xl overflow-hidden">
-      <div class="px-8 pt-8 pb-6">
-        <div class="flex items-start justify-between gap-6">
-          <div class="space-y-2">
-            <span class="font-label text-[10px] uppercase tracking-widest text-secondary">Toutes les émissions</span>
-            <h2 class="font-headline text-3xl font-bold italic text-on-surface">Radio Ponton — Catalogue complet</h2>
-            <p class="text-on-surface-variant text-sm">Naviguez entre toutes nos émissions et playlists depuis un seul lecteur.</p>
-          </div>
-          <span class="text-4xl hidden sm:block">📻</span>
-        </div>
-      </div>
-      <div class="ausha-player-wrap px-6 pb-8">
-        <iframe
-          name="Ausha Podcast Player"
-          frameborder="0"
-          loading="lazy"
-          id="ausha-o1VB"
-          height="420"
-          style="border: none; width:100%; height:420px; border-radius:0.5rem;"
-          src="https://player.ausha.co/?showId=B621lqFONl26&color=%23180BBF&multishow=true&playlist=true&dark=false&v=3&playerId=ausha-o1VB"
-        ></iframe>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ SÉPARATEUR ══════════════════════════════════════ -->
-  <div class="max-w-5xl mx-auto px-6 mb-16">
-    <div class="flex items-center gap-6">
-      <div class="h-px flex-1 bg-outline-variant/20"></div>
-      <span class="font-label text-xs uppercase tracking-widest text-outline whitespace-nowrap">Par émission</span>
-      <div class="h-px flex-1 bg-outline-variant/20"></div>
+  <!-- ═══ SHOWS ═════════════════════════════════════════════ -->
+  <div class="max-w-5xl mx-auto px-6 space-y-8 mb-20" id="shows-container">
+    <!-- Injected by JS -->
+    <div class="flex items-center justify-center py-16 gap-3">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════
-       LIVRE DE BORD
-  ════════════════════════════════════════════════════════ -->
-  <section id="section-livre-de-bord" class="emission-section max-w-5xl mx-auto px-6 mb-12">
-    <div class="bg-surface-container-low rounded-xl overflow-hidden">
-      <div class="px-8 pt-8 pb-6 border-b border-outline-variant/10">
-        <div class="flex items-start justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex items-center gap-3">
-              <span class="text-3xl">📓</span>
-              <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-secondary">Série · FR &amp; EN</span>
-                <h2 class="font-headline text-2xl font-bold italic text-on-surface">Livre de Bord</h2>
-              </div>
-            </div>
-            <p class="text-on-surface-variant text-sm leading-relaxed max-w-xl">
-              Les carnets de navigation et récits d'aventures maritimes. Des histoires vraies racontées par les marins eux-mêmes — en français et en anglais.
-            </p>
-          </div>
-          <div class="shrink-0 text-right hidden sm:block">
-            <span class="font-label text-[10px] uppercase tracking-widest text-outline">Diffusion</span>
-            <p class="font-label text-xs text-on-surface-variant mt-1">Mar. &amp; Jeu.<br/>12:00 FR · 20:00 EN</p>
-          </div>
-        </div>
-      </div>
-      <div class="ausha-player-wrap px-6 py-6">
-        <iframe
-          name="Ausha Podcast Player"
-          frameborder="0"
-          loading="lazy"
-          id="ausha-jc2L"
-          height="420"
-          style="border: none; width:100%; height:420px; border-radius:0.5rem;"
-          src="https://player.ausha.co/?showId=B621lqFONl26&color=%23180BBF&multishow=true&playlist=true&dark=false&playlistSlug=livre-de-bord&v=3&playerId=ausha-jc2L"
-        ></iframe>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════
-       CAP & MICRO
-  ════════════════════════════════════════════════════════ -->
-  <section id="section-cap-micro" class="emission-section max-w-5xl mx-auto px-6 mb-12">
-    <div class="bg-surface-container-low rounded-xl overflow-hidden">
-      <div class="px-8 pt-8 pb-6 border-b border-outline-variant/10">
-        <div class="flex items-start justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex items-center gap-3">
-              <span class="text-3xl">🎤</span>
-              <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-secondary">Interview · FR</span>
-                <h2 class="font-headline text-2xl font-bold italic text-on-surface">Cap &amp; Micro</h2>
-              </div>
-            </div>
-            <p class="text-on-surface-variant text-sm leading-relaxed max-w-xl">
-              Les grandes interviews de marins, navigateurs, constructeurs et passionnés du monde maritime francophone. Des rencontres qui font le tour du monde.
-            </p>
-          </div>
-          <div class="shrink-0 text-right hidden sm:block">
-            <span class="font-label text-[10px] uppercase tracking-widest text-outline">Diffusion</span>
-            <p class="font-label text-xs text-on-surface-variant mt-1">Dimanche<br/>10:30 FR</p>
-          </div>
-        </div>
-      </div>
-      <div class="ausha-player-wrap px-6 py-6">
-        <iframe
-          name="Ausha Podcast Player"
-          frameborder="0"
-          loading="lazy"
-          id="ausha-WtNI"
-          height="420"
-          style="border: none; width:100%; height:420px; border-radius:0.5rem;"
-          src="https://player.ausha.co/?showId=B621lqFONl26&color=%23180BBF&multishow=true&playlist=true&dark=false&playlistSlug=cap-micro&v=3&playerId=ausha-WtNI"
-        ></iframe>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════
-       HELM & MIKE
-  ════════════════════════════════════════════════════════ -->
-  <section id="section-helm-mike" class="emission-section max-w-5xl mx-auto px-6 mb-12">
-    <div class="bg-surface-container-low rounded-xl overflow-hidden">
-      <div class="px-8 pt-8 pb-6 border-b border-outline-variant/10">
-        <div class="flex items-start justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex items-center gap-3">
-              <span class="text-3xl">🎙️</span>
-              <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-secondary">Interview · EN</span>
-                <h2 class="font-headline text-2xl font-bold italic text-on-surface">Helm &amp; Mike</h2>
-              </div>
-            </div>
-            <p class="text-on-surface-variant text-sm leading-relaxed max-w-xl">
-              Sailor interviews in English — stories from international cruisers, offshore racers and sea lovers from around the world. The English counterpart of Cap &amp; Micro.
-            </p>
-          </div>
-          <div class="shrink-0 text-right hidden sm:block">
-            <span class="font-label text-[10px] uppercase tracking-widest text-outline">On air</span>
-            <p class="font-label text-xs text-on-surface-variant mt-1">Sunday<br/>17:30 EN</p>
-          </div>
-        </div>
-      </div>
-      <div class="ausha-player-wrap px-6 py-6">
-        <iframe
-          name="Ausha Podcast Player"
-          frameborder="0"
-          loading="lazy"
-          id="ausha-N1LM"
-          height="420"
-          style="border: none; width:100%; height:420px; border-radius:0.5rem;"
-          src="https://player.ausha.co/?showId=B621lqFONl26&color=%23180BBF&multishow=true&playlist=true&dark=false&playlistSlug=helm-mike&v=3&playerId=ausha-N1LM"
-        ></iframe>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════
-       À POSTE
-  ════════════════════════════════════════════════════════ -->
-  <section id="section-a-poste" class="emission-section max-w-5xl mx-auto px-6 mb-12">
-    <div class="bg-surface-container-low rounded-xl overflow-hidden">
-      <div class="px-8 pt-8 pb-6 border-b border-outline-variant/10">
-        <div class="flex items-start justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex items-center gap-3">
-              <span class="text-3xl">⚓</span>
-              <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-secondary">Magazine · FR &amp; EN</span>
-                <h2 class="font-headline text-2xl font-bold italic text-on-surface">À Poste</h2>
-              </div>
-            </div>
-            <p class="text-on-surface-variant text-sm leading-relaxed max-w-xl">
-              Le magazine nautique hebdomadaire de Radio Ponton. Actualité maritime, équipements, vie des ports, reportages et chroniques — en français et en anglais.
-            </p>
-          </div>
-          <div class="shrink-0 text-right hidden sm:block">
-            <span class="font-label text-[10px] uppercase tracking-widest text-outline">Diffusion</span>
-            <p class="font-label text-xs text-on-surface-variant mt-1">Lun. Mer. Ven.<br/>12:00 FR · 20:00 EN</p>
-          </div>
-        </div>
-      </div>
-      <div class="ausha-player-wrap px-6 py-6">
-        <iframe
-          name="Ausha Podcast Player"
-          frameborder="0"
-          loading="lazy"
-          id="ausha-attj"
-          height="420"
-          style="border: none; width:100%; height:420px; border-radius:0.5rem;"
-          src="https://player.ausha.co/?showId=B621lqFONl26&color=%23180BBF&multishow=true&playlist=true&dark=false&playlistSlug=a-poste&v=3&playerId=ausha-attj"
-        ></iframe>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════
-       VEILLÉE DE MOUILLAGE
-  ════════════════════════════════════════════════════════ -->
-  <section id="section-veillee" class="emission-section max-w-5xl mx-auto px-6 mb-20">
-    <div class="bg-surface-container-low rounded-xl overflow-hidden">
-      <div class="px-8 pt-8 pb-6 border-b border-outline-variant/10">
-        <div class="flex items-start justify-between gap-6">
-          <div class="space-y-2">
-            <div class="flex items-center gap-3">
-              <span class="text-3xl">🌊</span>
-              <div>
-                <span class="font-label text-[10px] uppercase tracking-widest text-secondary">Live · FR</span>
-                <h2 class="font-headline text-2xl font-bold italic text-on-surface">Veillée de Mouillage</h2>
-              </div>
-            </div>
-            <p class="text-on-surface-variant text-sm leading-relaxed max-w-xl">
-              La table ronde du samedi soir. Des marins qui mouillent l'ancre et partagent leurs histoires, leurs conseils et leurs bons plans autour d'un verre virtuel.
-            </p>
-          </div>
-          <div class="shrink-0 text-right hidden sm:block">
-            <span class="font-label text-[10px] uppercase tracking-widest text-outline">Diffusion</span>
-            <p class="font-label text-xs text-on-surface-variant mt-1">Samedi<br/>19:30 FR</p>
-          </div>
-        </div>
-      </div>
-      <div class="ausha-player-wrap px-6 py-6">
-        <iframe
-          name="Ausha Podcast Player"
-          frameborder="0"
-          loading="lazy"
-          id="ausha-zztH"
-          height="420"
-          style="border: none; width:100%; height:420px; border-radius:0.5rem;"
-          src="https://player.ausha.co/?showId=B621lqFONl26&color=%23180BBF&multishow=true&playlist=true&dark=false&playlistSlug=veillee-de-mouillage&v=3&playerId=ausha-zztH"
-        ></iframe>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ CTA DIRECT ══════════════════════════════════════ -->
-  <section class="bg-surface-container-low py-16 px-6 mb-0">
+  <!-- ═══ CTA DIRECT ═══════════════════════════════════════ -->
+  <section class="bg-surface-container-low py-16 px-6">
     <div class="max-w-3xl mx-auto text-center space-y-6">
       <h2 class="font-headline text-3xl font-bold italic text-on-surface">Envie d'écouter en direct ?</h2>
       <p class="text-on-surface-variant">Radio Ponton diffuse 24h/24, 7j/7 — le live est toujours disponible.</p>
@@ -449,7 +213,7 @@
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
     <div class="space-y-3">
       <img src="logo-transparent.png" alt="Radio Ponton" class="h-10 object-contain opacity-70"/>
-      <p class="font-label text-xs text-outline/60">© 2024 Radio Ponton — Tous droits réservés</p>
+      <p class="font-label text-xs text-outline/60">© 2026 Radio Ponton — Tous droits réservés</p>
     </div>
     <div class="flex flex-wrap gap-x-8 gap-y-2">
       <a href="index.html" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Accueil</a>
@@ -465,7 +229,7 @@
   </div>
 </footer>
 
-<!-- ═══ MOBILE BOTTOM NAV ══════════════════════════════ -->
+<!-- ═══ MOBILE BOTTOM NAV ═══════════════════════════════ -->
 <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 bg-surface-container-lowest/95 backdrop-blur-lg border-t border-outline-variant/10 flex items-center justify-around px-2">
   <a href="index.html" class="flex flex-col items-center gap-0.5 text-on-surface-variant/60 py-1 px-3">
     <span class="material-symbols-outlined text-xl">radio</span>
@@ -486,29 +250,273 @@
 </div>
 
 <script>
-  // Mobile nav
+  // ── Mobile nav ────────────────────────────────────────
   document.getElementById('nav-toggle').addEventListener('click', () => {
     document.getElementById('mobile-menu').classList.toggle('hidden');
   });
 
-  // ── Ausha ticker via RSS ──────────────────────────────────
-  const AUSHA_RSS_URL = 'https://feed.ausha.co/B621lqFONl26';
+  // ── Config ────────────────────────────────────────────
+  const API_BASE = 'https://radio.radioponton.net/api/station/1/public';
 
-  async function loadTicker() {
-    try {
-      const res = await fetch(
-        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(AUSHA_RSS_URL)}&count=8`,
-        { signal: AbortSignal.timeout(5000) }
-      );
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data.status !== 'ok' || !data.items?.length) return;
-      const titles = data.items.map(ep => `🎙️ ${ep.title}`).join('  ·  ');
-      const el = document.getElementById('ticker-text');
-      el.textContent = titles + '  —  ' + titles;
-    } catch(_) { /* garde le texte statique */ }
+  const SHOWS = [
+    {
+      id: '1f13a940-0703-6d90-96c2-d3bbc9e8c7a0',
+      anchor: 'livre-de-bord',
+      title: 'Livre de Bord',
+      emoji: '📓',
+      tag: 'Récit · FR',
+      description: 'Les carnets de navigation et récits d\'aventures maritimes. Des histoires vraies racontées par les marins eux-mêmes.',
+      schedule: 'Mar. & Jeu. · 12:00',
+      art: 'https://res.cloudinary.com/dbuxxe0ac/image/upload/v1778362370/rp_LDB_PODCAST_20260417_snxizc.png'
+    },
+    {
+      id: '1f13a940-107d-6966-96c2-8385c10b3156',
+      anchor: 'cap-micro',
+      title: 'Cap & Micro',
+      emoji: '🎤',
+      tag: 'Interview · FR',
+      description: 'Les grandes interviews de marins, navigateurs, constructeurs et passionnés du monde maritime francophone.',
+      schedule: 'Dimanche · 11:30',
+      art: 'https://res.cloudinary.com/dbuxxe0ac/image/upload/v1778362411/rp_CM_PODCAST_20260417_zwx85u.png'
+    },
+    {
+      id: '1f13a940-15ac-6838-96c2-2b30dc176bb9',
+      anchor: 'helm-mike',
+      title: 'Helm & Mike',
+      emoji: '🎙️',
+      tag: 'Interview · EN',
+      description: 'Sailor interviews in English — stories from international cruisers, offshore racers and sea lovers around the world.',
+      schedule: 'Sunday · 16:30',
+      art: 'https://res.cloudinary.com/dbuxxe0ac/image/upload/v1778362389/rp_HM_PODCAST_20260417_dzudry.png'
+    },
+    {
+      id: '1f13a940-0bb8-67b4-96c2-21507e7716ab',
+      anchor: 'a-poste',
+      title: 'À Poste',
+      emoji: '⚓',
+      tag: 'Magazine · FR & EN',
+      description: 'Le magazine nautique hebdomadaire de Radio Ponton. Actualité maritime, équipements, vie des ports et reportages.',
+      schedule: 'Lun. · Mer. · Ven. · 12:00',
+      art: 'https://res.cloudinary.com/dbuxxe0ac/image/upload/v1778362429/rp_AP_PODCAST_20260417_otarrr.png'
+    },
+    {
+      id: '1f13b19a-001d-6a0a-8508-e16392574237',
+      anchor: 'veillee',
+      title: 'Veillée de Mouillage',
+      emoji: '🌊',
+      tag: 'Table ronde · FR',
+      description: 'La table ronde du samedi soir. Des marins qui mouillent l\'ancre et partagent leurs histoires autour d\'un verre virtuel.',
+      schedule: 'Samedi · 19:30',
+      art: 'https://res.cloudinary.com/dbuxxe0ac/image/upload/v1776443048/rp_VDM_S01E01_20260417_pfl9cx.png'
+    }
+  ];
+
+  // ── Active player tracking ────────────────────────────
+  let activeAudio = null;
+  let activePlayBtn = null;
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
   }
-  loadTicker();
+
+  function buildPlayer(episode) {
+    const div = document.createElement('div');
+    div.className = 'rp-player mt-3';
+    div.innerHTML = `
+      <button class="play-btn shrink-0 w-10 h-10 rounded-full bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors" aria-label="Lecture">
+        <span class="material-symbols-outlined text-on-secondary text-xl play-icon" style="font-variation-settings:'FILL' 1">play_arrow</span>
+      </button>
+      <div class="flex-1 min-w-0">
+        <input type="range" class="w-full" value="0" min="0" max="100" step="0.1" aria-label="Progression"/>
+        <div class="flex justify-between mt-1">
+          <span class="font-label text-[10px] text-outline time-current">0:00</span>
+          <span class="font-label text-[10px] text-outline time-total">${episode.media?.length_text || '--:--'}</span>
+        </div>
+      </div>
+      <a href="${episode.links.download}" target="_blank" rel="noopener" title="Télécharger" class="shrink-0 text-outline hover:text-secondary transition-colors">
+        <span class="material-symbols-outlined text-xl">download</span>
+      </a>
+    `;
+
+    const audio = new Audio(episode.links.download);
+    const playBtn = div.querySelector('.play-btn');
+    const icon = div.querySelector('.play-icon');
+    const range = div.querySelector('input[type=range]');
+    const timeCurrent = div.querySelector('.time-current');
+    const timeTotal = div.querySelector('.time-total');
+
+    playBtn.addEventListener('click', () => {
+      if (activeAudio && activeAudio !== audio) {
+        activeAudio.pause();
+        if (activePlayBtn) activePlayBtn.querySelector('.play-icon').textContent = 'play_arrow';
+      }
+      if (audio.paused) {
+        audio.play();
+        icon.textContent = 'pause';
+        activeAudio = audio;
+        activePlayBtn = playBtn;
+      } else {
+        audio.pause();
+        icon.textContent = 'play_arrow';
+      }
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        range.value = (audio.currentTime / audio.duration) * 100;
+        timeCurrent.textContent = formatTime(audio.currentTime);
+      }
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      timeTotal.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('ended', () => {
+      icon.textContent = 'play_arrow';
+      range.value = 0;
+      timeCurrent.textContent = '0:00';
+    });
+
+    range.addEventListener('input', () => {
+      if (audio.duration) audio.currentTime = (range.value / 100) * audio.duration;
+    });
+
+    return div;
+  }
+
+  function buildEpisodeCard(episode) {
+    const epNum = episode.season_number && episode.episode_number
+      ? `S${String(episode.season_number).padStart(2,'0')}E${String(episode.episode_number).padStart(2,'0')}`
+      : '';
+    const date = episode.publish_at
+      ? new Date(episode.publish_at * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+      : '';
+
+    const card = document.createElement('div');
+    card.className = 'flex gap-4 py-4 border-b border-outline-variant/10 last:border-0';
+    card.innerHTML = `
+      <img src="${episode.art || ''}" alt="" class="w-16 h-16 rounded-lg object-cover shrink-0 bg-surface-container-high" onerror="this.style.display='none'"/>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between gap-2 mb-1">
+          <div>
+            ${epNum ? `<span class="font-label text-[10px] uppercase tracking-widest text-secondary">${epNum}</span>` : ''}
+            <h3 class="font-label font-semibold text-on-surface text-sm leading-tight">${episode.title}</h3>
+          </div>
+          <span class="font-label text-xs text-outline shrink-0">${episode.media?.length_text || ''}</span>
+        </div>
+        ${episode.description_short ? `<p class="font-label text-xs text-on-surface-variant leading-relaxed line-clamp-2 mb-2">${episode.description_short}</p>` : ''}
+        ${date ? `<span class="font-label text-[10px] text-outline">${date}</span>` : ''}
+      </div>
+    `;
+
+    card.appendChild(buildPlayer(episode));
+    return card;
+  }
+
+  function buildShowSection(show, episodes, apiPodcast) {
+    const hasEpisodes = episodes && episodes.length > 0;
+    const artUrl = (apiPodcast && apiPodcast.art) ? apiPodcast.art : show.art;
+    const epCount = hasEpisodes ? episodes.length : 0;
+
+    const section = document.createElement('section');
+    section.id = `show-${show.anchor}`;
+    section.className = 'emission-section bg-surface-container-low rounded-xl overflow-hidden';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'flex gap-5 p-6 md:p-8';
+    header.innerHTML = `
+      <img src="${artUrl}" alt="${show.title}" class="w-24 h-24 md:w-32 md:h-32 rounded-xl object-cover shrink-0 bg-surface-container-high"/>
+      <div class="flex-1 min-w-0 space-y-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="font-label text-[10px] uppercase tracking-widest text-secondary">${show.tag}</span>
+          ${hasEpisodes
+            ? `<span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-secondary/10 text-secondary">${epCount} épisode${epCount > 1 ? 's' : ''}</span>`
+            : `<span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-surface-container text-outline">Bientôt</span>`
+          }
+        </div>
+        <h2 class="font-headline text-2xl font-bold italic text-on-surface">${show.emoji} ${show.title}</h2>
+        <p class="font-label text-sm text-on-surface-variant leading-relaxed">${show.description}</p>
+        <div class="flex items-center gap-1.5 pt-1">
+          <span class="material-symbols-outlined text-outline text-base">schedule</span>
+          <span class="font-label text-xs text-outline">${show.schedule}</span>
+        </div>
+      </div>
+    `;
+    section.appendChild(header);
+
+    // Episodes or coming soon
+    const body = document.createElement('div');
+    if (hasEpisodes) {
+      body.className = 'px-6 md:px-8 pb-6 border-t border-outline-variant/10';
+      episodes.forEach(ep => body.appendChild(buildEpisodeCard(ep)));
+    } else {
+      body.className = 'px-6 md:px-8 pb-8 border-t border-outline-variant/10 pt-6 flex items-center gap-4';
+      body.innerHTML = `
+        <span class="material-symbols-outlined text-outline text-3xl">hourglass_empty</span>
+        <div>
+          <p class="font-label text-sm font-semibold text-on-surface-variant">Épisodes à venir</p>
+          <p class="font-label text-xs text-outline">Les premiers épisodes seront disponibles très prochainement.</p>
+        </div>
+      `;
+    }
+    section.appendChild(body);
+    return section;
+  }
+
+  // ── Load and render ───────────────────────────────────
+  async function loadPodcasts() {
+    const container = document.getElementById('shows-container');
+    try {
+      const res = await fetch(`${API_BASE}/podcasts`, { signal: AbortSignal.timeout(8000) });
+      const apiPodcasts = res.ok ? await res.json() : [];
+
+      // Build map by podcast ID
+      const podcastMap = {};
+      for (const p of apiPodcasts) podcastMap[p.id] = p;
+
+      // Fetch episodes for all shows with content
+      const episodesMap = {};
+      await Promise.all(
+        apiPodcasts.map(async p => {
+          if (p.episodes > 0 && p.links?.episodes) {
+            try {
+              const epRes = await fetch(p.links.episodes, { signal: AbortSignal.timeout(8000) });
+              if (epRes.ok) episodesMap[p.id] = await epRes.json();
+            } catch(_) {}
+          }
+        })
+      );
+
+      // Build ticker from latest episodes
+      const allEpisodes = Object.values(episodesMap).flat();
+      if (allEpisodes.length > 0) {
+        const titles = allEpisodes.map(ep => `🎙️ ${ep.title}`).join('  ·  ');
+        const doubled = titles + '  —  ' + titles;
+        document.getElementById('ticker-text').textContent = doubled;
+      }
+
+      // Render all show sections
+      container.innerHTML = '';
+      for (const show of SHOWS) {
+        const apiPodcast = podcastMap[show.id] || null;
+        const episodes = episodesMap[show.id] || null;
+        container.appendChild(buildShowSection(show, episodes, apiPodcast));
+      }
+
+    } catch(_) {
+      // Fallback: render all shows as "coming soon"
+      container.innerHTML = '';
+      for (const show of SHOWS) {
+        container.appendChild(buildShowSection(show, null, null));
+      }
+    }
+  }
+
+  loadPodcasts();
 </script>
 </body>
 </html>

@@ -84,40 +84,49 @@
     @keyframes pulse-amber { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:0.4;transform:scale(0.7); } }
     .dot-live { animation: pulse-amber 1.8s ease-in-out infinite; }
 
-    /* Grid responsive */
-    @media (max-width: 900px) {
-      .prog-full-cols { grid-template-columns: repeat(4,1fr) !important; }
+    /* Show type colors */
+    .show-news     { --c: #8d909e; }
+    .show-mag      { --c: #b1c5ff; }
+    .show-serie    { --c: #ffb95d; }
+    .show-interview{ --c: #d4b4ff; }
+    .show-meteo    { --c: #7dd3d4; }
+    .show-live     { --c: #86efac; }
+
+    .slot-card {
+      border-left: 3px solid var(--c, #434653);
+      transition: background 0.15s;
     }
-    @media (max-width: 600px) {
-      .prog-full-cols { grid-template-columns: repeat(2,1fr) !important; }
+    .slot-card:hover { background: rgba(255,255,255,0.025); }
+    .slot-card.is-now {
+      border-left-color: #ffb95d !important;
+      background: rgba(255,185,93,0.06);
+    }
+    .slot-card.is-past { opacity: 0.45; }
+
+    .show-label { color: var(--c, #8d909e); }
+
+    /* Day tab active */
+    .day-tab.active {
+      background: rgba(255,185,93,0.15);
+      color: #ffb95d;
+      border-color: rgba(255,185,93,0.4);
+    }
+    .day-tab { transition: all 0.15s; }
+    .day-tab:hover:not(.active) { background: rgba(255,255,255,0.04); }
+
+    /* Now card glow */
+    .now-card {
+      background: linear-gradient(135deg, rgba(43,95,199,0.2) 0%, rgba(255,185,93,0.08) 100%);
+      border: 1px solid rgba(255,185,93,0.25);
     }
 
-    /* Now playing bar */
-    .now-playing-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      z-index: 40;
-      background: rgba(34,42,57,0.95);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255,185,93,0.15);
-    }
-    @media (min-width: 768px) {
-      .now-playing-bar { bottom: 0; }
-    }
-
-    /* Prog slot hover */
-    .prog-slot-full:hover { background: rgba(255,185,93,0.06) !important; }
-
-    /* Tag colors */
-    .tag-news    { color: #8d909e; }
-    .tag-mag     { color: #b1c5ff; }
-    .tag-serie   { color: #ffb95d; }
-    .tag-live    { color: #86efac; }
-    .tag-interview { color: #c3c6d5; }
-    .tag-meteo   { color: #c9c6be; }
+    /* Scrollable day tabs */
+    .day-tabs-scroll { overflow-x: auto; scrollbar-width: none; }
+    .day-tabs-scroll::-webkit-scrollbar { display: none; }
   </style>
 </head>
 
-<body class="bg-background text-on-background font-body overflow-x-hidden selection:bg-secondary selection:text-on-secondary" style="padding-bottom:5rem;">
+<body class="bg-background text-on-background font-body overflow-x-hidden selection:bg-secondary selection:text-on-secondary pb-16 md:pb-0">
 
 <!-- ═══ NAV ═══════════════════════════════════════════════ -->
 <nav class="fixed top-0 left-0 right-0 z-50 h-20 bg-surface-container-lowest/85 backdrop-blur-xl border-b border-outline-variant/15">
@@ -157,204 +166,167 @@
 <main class="pt-20">
 
   <!-- ═══ HERO ════════════════════════════════════════════ -->
-  <section class="relative py-16 md:py-24 px-6 overflow-hidden">
+  <section class="relative py-14 md:py-20 px-6 overflow-hidden">
     <div class="absolute inset-0" style="background: radial-gradient(ellipse 50% 70% at 50% 30%, rgba(43,95,199,0.15) 0%, transparent 70%), linear-gradient(180deg, #0b1422 0%, #060e1c 100%);"></div>
     <div class="absolute bottom-0 left-0 right-0 h-20" style="background:linear-gradient(0deg,#0b1422,transparent);"></div>
-    <div class="max-w-4xl mx-auto relative z-10 space-y-5">
-      <div class="flex items-center gap-4">
+    <div class="max-w-4xl mx-auto relative z-10">
+      <div class="flex items-center gap-4 mb-4">
         <span class="material-symbols-outlined text-secondary text-5xl">calendar_today</span>
         <div>
           <span class="font-label text-xs uppercase tracking-widest text-secondary">Grille de diffusion</span>
           <h1 class="font-headline text-5xl md:text-6xl font-bold italic text-on-surface">Journal de Bord</h1>
         </div>
       </div>
-      <p class="text-on-surface-variant text-xl max-w-2xl leading-relaxed">
-        La grille complète des émissions Radio Ponton. Mis à jour chaque semaine — la colonne du jour est mise en évidence.
+      <p class="text-on-surface-variant text-lg max-w-2xl leading-relaxed">
+        La grille complète des émissions Radio Ponton — chaque semaine, la même horloge, la même mer.
       </p>
-      <!-- Week navigation -->
-      <div class="flex items-center gap-4 pt-2">
-        <button id="btn-prev" class="flex items-center gap-2 font-label text-xs uppercase tracking-widest text-on-surface-variant hover:text-secondary transition-colors px-4 py-2 rounded-md bg-surface-container-high">
-          <span class="material-symbols-outlined text-sm">chevron_left</span>
-          Semaine préc.
-        </button>
-        <span id="week-label" class="font-label text-xs text-secondary uppercase tracking-widest"></span>
-        <button id="btn-next" class="flex items-center gap-2 font-label text-xs uppercase tracking-widest text-on-surface-variant hover:text-secondary transition-colors px-4 py-2 rounded-md bg-surface-container-high">
-          Cette semaine
-          <span class="material-symbols-outlined text-sm">chevron_right</span>
-        </button>
-      </div>
     </div>
   </section>
 
-  <!-- ═══ LÉGENDE ══════════════════════════════════════ -->
-  <div class="max-w-7xl mx-auto px-6 mb-6">
-    <div class="flex flex-wrap gap-4 items-center">
-      <span class="font-label text-[10px] uppercase tracking-widest text-outline">Légende :</span>
-      <span class="flex items-center gap-1.5 font-label text-xs tag-news">● Flash VHF</span>
-      <span class="flex items-center gap-1.5 font-label text-xs tag-mag">● Magazine</span>
-      <span class="flex items-center gap-1.5 font-label text-xs tag-serie">● Série</span>
-      <span class="flex items-center gap-1.5 font-label text-xs tag-live">● Live</span>
-      <span class="flex items-center gap-1.5 font-label text-xs tag-interview">● Interview</span>
-      <span class="flex items-center gap-1.5 font-label text-xs tag-meteo">● Météo</span>
-    </div>
-  </div>
+  <!-- ═══ EN CE MOMENT ══════════════════════════════════ -->
+  <div class="max-w-4xl mx-auto px-6 mb-10" id="now-section"></div>
 
-  <!-- ═══ GRILLE 7 JOURS ═══════════════════════════════ -->
-  <section class="max-w-7xl mx-auto px-6 mb-16">
-    <div class="overflow-x-auto pb-4 -mx-2">
-      <div id="prog-full-grid" class="min-w-[700px] px-2"></div>
+  <!-- ═══ PROGRAMME DU JOUR ════════════════════════════ -->
+  <section class="max-w-4xl mx-auto px-6 mb-16">
+
+    <!-- Day tabs -->
+    <div class="day-tabs-scroll mb-6">
+      <div class="flex gap-2 pb-1 min-w-max" id="day-tabs"></div>
     </div>
+
+    <!-- Timeline -->
+    <div id="timeline" class="space-y-2"></div>
+
   </section>
 
-  <!-- ═══ FICHES ÉMISSIONS ═════════════════════════════ -->
-  <section class="max-w-7xl mx-auto px-6 py-12 bg-surface-container-low rounded-xl mb-12">
-    <div class="mb-10">
-      <span class="font-label text-xs uppercase tracking-widest text-secondary">Nos émissions</span>
-      <h2 class="font-headline text-4xl font-bold text-on-surface mt-2">Les émissions de Radio Ponton</h2>
+  <!-- ═══ NOS ÉMISSIONS ════════════════════════════════ -->
+  <section class="max-w-4xl mx-auto px-6 mb-16">
+    <div class="mb-8">
+      <span class="font-label text-xs uppercase tracking-widest text-secondary">À l'antenne</span>
+      <h2 class="font-headline text-3xl font-bold italic text-on-surface mt-1">Nos émissions</h2>
     </div>
+    <div class="grid sm:grid-cols-2 gap-4">
 
-    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <!-- Cap sur l'Info -->
-      <div class="bg-surface-container-high rounded-xl p-6 space-y-3">
-        <div class="flex items-start justify-between gap-4">
+      <div class="show-news bg-surface-container-low rounded-xl p-5 border-l-4" style="border-color:var(--c)">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
-            <span class="font-label text-[10px] uppercase tracking-widest tag-news">Flash VHF · Quotidien</span>
-            <h3 class="font-headline text-xl font-bold italic text-on-surface mt-1">Cap sur l'Info</h3>
+            <span class="show-label font-label text-[10px] uppercase tracking-widest">Flash info · FR</span>
+            <h3 class="font-headline text-xl font-bold italic text-on-surface">Cap sur l'Info</h3>
           </div>
-          <span class="text-2xl shrink-0">📡</span>
+          <span class="text-2xl">📡</span>
         </div>
-        <p class="text-on-surface-variant text-sm leading-relaxed">L'actualité maritime quotidienne — météo, sécurité, nouvelles des ports et des navigateurs.</p>
-        <div class="text-xs text-outline font-label">06:00 · 10:00 · 14:00 · 22:00 — Tous les jours</div>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">L'actualité nautique quotidienne — météo, sécurité, nouvelles des ports et des navigateurs.</p>
+        <span class="font-label text-xs text-outline">02:00 · 06:00 · 10:00 · 14:00 · 18:00 · 22:00 — Tous les jours</span>
       </div>
 
-      <!-- À Poste -->
-      <div class="bg-surface-container-high rounded-xl p-6 space-y-3">
-        <div class="flex items-start justify-between gap-4">
+      <div class="show-mag bg-surface-container-low rounded-xl p-5 border-l-4" style="border-color:var(--c)">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
-            <span class="font-label text-[10px] uppercase tracking-widest tag-mag">Magazine · FR &amp; EN</span>
-            <h3 class="font-headline text-xl font-bold italic text-on-surface mt-1">À Poste</h3>
+            <span class="show-label font-label text-[10px] uppercase tracking-widest">Magazine · FR &amp; EN</span>
+            <h3 class="font-headline text-xl font-bold italic text-on-surface">À Poste</h3>
           </div>
-          <span class="text-2xl shrink-0">⚓</span>
+          <span class="text-2xl">⚓</span>
         </div>
-        <p class="text-on-surface-variant text-sm leading-relaxed">Le magazine nautique hebdomadaire. Actualité maritime, équipements, vie des ports et reportages.</p>
-        <div class="text-xs text-outline font-label">12:00 FR &amp; 20:00 EN — Lundi, Mercredi, Vendredi</div>
-        <a href="podcasts.html" class="inline-flex items-center gap-1.5 text-secondary font-label text-xs hover:text-secondary-fixed-dim transition-colors">
-          <span class="material-symbols-outlined text-sm">podcasts</span>
-          Voir les épisodes
-        </a>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">Le magazine nautique hebdomadaire. Actualité maritime, équipements, vie des ports et reportages.</p>
+        <div class="flex items-center justify-between">
+          <span class="font-label text-xs text-outline">12:00 FR · 20:00 EN — Lun, Mer, Ven</span>
+          <a href="podcasts.html#show-a-poste" class="show-label font-label text-xs flex items-center gap-1 hover:opacity-70 transition-opacity">
+            <span class="material-symbols-outlined text-sm">podcasts</span> Écouter
+          </a>
+        </div>
       </div>
 
-      <!-- Livre de Bord -->
-      <div class="bg-surface-container-high rounded-xl p-6 space-y-3">
-        <div class="flex items-start justify-between gap-4">
+      <div class="show-serie bg-surface-container-low rounded-xl p-5 border-l-4" style="border-color:var(--c)">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
-            <span class="font-label text-[10px] uppercase tracking-widest tag-serie">Série · FR &amp; EN</span>
-            <h3 class="font-headline text-xl font-bold italic text-on-surface mt-1">Livre de Bord</h3>
+            <span class="show-label font-label text-[10px] uppercase tracking-widest">Série · FR &amp; EN</span>
+            <h3 class="font-headline text-xl font-bold italic text-on-surface">Livre de Bord</h3>
           </div>
-          <span class="text-2xl shrink-0">📓</span>
+          <span class="text-2xl">📓</span>
         </div>
-        <p class="text-on-surface-variant text-sm leading-relaxed">Les carnets de navigation et récits d'aventures maritimes. Des histoires racontées par les marins eux-mêmes.</p>
-        <div class="text-xs text-outline font-label">12:00 FR &amp; 20:00 EN — Mardi, Jeudi, Samedi</div>
-        <a href="podcasts.html" class="inline-flex items-center gap-1.5 text-secondary font-label text-xs hover:text-secondary-fixed-dim transition-colors">
-          <span class="material-symbols-outlined text-sm">podcasts</span>
-          Voir les épisodes
-        </a>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">Les carnets de navigation et récits d'aventures maritimes. Des histoires vraies racontées par les marins eux-mêmes.</p>
+        <div class="flex items-center justify-between">
+          <span class="font-label text-xs text-outline">12:00 FR · 20:00 EN — Mar, Jeu, Sam</span>
+          <a href="podcasts.html#show-livre-de-bord" class="show-label font-label text-xs flex items-center gap-1 hover:opacity-70 transition-opacity">
+            <span class="material-symbols-outlined text-sm">podcasts</span> Écouter
+          </a>
+        </div>
       </div>
 
-      <!-- Veillée de Mouillage -->
-      <div class="bg-surface-container-high rounded-xl p-6 space-y-3">
-        <div class="flex items-start justify-between gap-4">
+      <div class="show-interview bg-surface-container-low rounded-xl p-5 border-l-4" style="border-color:var(--c)">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
-            <span class="font-label text-[10px] uppercase tracking-widest tag-live">Live · FR</span>
-            <h3 class="font-headline text-xl font-bold italic text-on-surface mt-1">Veillée de Mouillage</h3>
+            <span class="show-label font-label text-[10px] uppercase tracking-widest">Interview · FR</span>
+            <h3 class="font-headline text-xl font-bold italic text-on-surface">Cap &amp; Micro</h3>
           </div>
-          <span class="text-2xl shrink-0">🌊</span>
+          <span class="text-2xl">🎤</span>
         </div>
-        <p class="text-on-surface-variant text-sm leading-relaxed">La table ronde du samedi soir. Des marins qui partagent histoires, conseils et bons plans au mouillage.</p>
-        <div class="text-xs text-outline font-label">19:30 — Samedi</div>
-        <a href="podcasts.html" class="inline-flex items-center gap-1.5 text-secondary font-label text-xs hover:text-secondary-fixed-dim transition-colors">
-          <span class="material-symbols-outlined text-sm">podcasts</span>
-          Voir les épisodes
-        </a>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">Les grandes interviews de marins, navigateurs, constructeurs et passionnés du monde maritime francophone.</p>
+        <div class="flex items-center justify-between">
+          <span class="font-label text-xs text-outline">11:30 — Dimanche</span>
+          <a href="podcasts.html#show-cap-micro" class="show-label font-label text-xs flex items-center gap-1 hover:opacity-70 transition-opacity">
+            <span class="material-symbols-outlined text-sm">podcasts</span> Écouter
+          </a>
+        </div>
       </div>
 
-      <!-- Cap & Micro -->
-      <div class="bg-surface-container-high rounded-xl p-6 space-y-3">
-        <div class="flex items-start justify-between gap-4">
+      <div class="show-interview bg-surface-container-low rounded-xl p-5 border-l-4" style="border-color:var(--c)">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
-            <span class="font-label text-[10px] uppercase tracking-widest tag-interview">Interview · FR</span>
-            <h3 class="font-headline text-xl font-bold italic text-on-surface mt-1">Cap &amp; Micro</h3>
+            <span class="show-label font-label text-[10px] uppercase tracking-widest">Interview · EN</span>
+            <h3 class="font-headline text-xl font-bold italic text-on-surface">Helm &amp; Mike</h3>
           </div>
-          <span class="text-2xl shrink-0">🎤</span>
+          <span class="text-2xl">🎙️</span>
         </div>
-        <p class="text-on-surface-variant text-sm leading-relaxed">Les grandes interviews de marins, navigateurs, constructeurs et passionnés du monde maritime francophone.</p>
-        <div class="text-xs text-outline font-label">10:30 — Dimanche</div>
-        <a href="podcasts.html" class="inline-flex items-center gap-1.5 text-secondary font-label text-xs hover:text-secondary-fixed-dim transition-colors">
-          <span class="material-symbols-outlined text-sm">podcasts</span>
-          Voir les épisodes
-        </a>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">Sailor interviews in English — stories from international cruisers, offshore racers and sea lovers around the world.</p>
+        <div class="flex items-center justify-between">
+          <span class="font-label text-xs text-outline">16:30 — Sunday</span>
+          <a href="podcasts.html#show-helm-mike" class="show-label font-label text-xs flex items-center gap-1 hover:opacity-70 transition-opacity">
+            <span class="material-symbols-outlined text-sm">podcasts</span> Listen
+          </a>
+        </div>
       </div>
 
-      <!-- Helm & Mike -->
-      <div class="bg-surface-container-high rounded-xl p-6 space-y-3">
-        <div class="flex items-start justify-between gap-4">
+      <div class="show-meteo bg-surface-container-low rounded-xl p-5 border-l-4" style="border-color:var(--c)">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
-            <span class="font-label text-[10px] uppercase tracking-widest tag-interview">Interview · EN</span>
-            <h3 class="font-headline text-xl font-bold italic text-on-surface mt-1">Helm &amp; Mike</h3>
+            <span class="show-label font-label text-[10px] uppercase tracking-widest">Météo marine · FR &amp; EN</span>
+            <h3 class="font-headline text-xl font-bold italic text-on-surface">Le Hublot</h3>
           </div>
-          <span class="text-2xl shrink-0">🎙️</span>
+          <span class="text-2xl">🌐</span>
         </div>
-        <p class="text-on-surface-variant text-sm leading-relaxed">Sailor interviews in English. Stories from international cruisers, racers and sea lovers around the world.</p>
-        <div class="text-xs text-outline font-label">17:30 — Sunday</div>
-        <a href="podcasts.html" class="inline-flex items-center gap-1.5 text-secondary font-label text-xs hover:text-secondary-fixed-dim transition-colors">
-          <span class="material-symbols-outlined text-sm">podcasts</span>
-          View episodes
-        </a>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">Météo marine, routage et conseils de navigation. Le point hebdomadaire pour préparer votre traversée.</p>
+        <span class="font-label text-xs text-outline">20:00 FR · 20:15 EN — Dimanche</span>
       </div>
 
-      <!-- Le Hublot -->
-      <div class="bg-surface-container-high rounded-xl p-6 space-y-3">
-        <div class="flex items-start justify-between gap-4">
+      <div class="show-live bg-surface-container-low rounded-xl p-5 border-l-4 sm:col-span-2" style="border-color:var(--c)">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
-            <span class="font-label text-[10px] uppercase tracking-widest tag-meteo">Météo · FR</span>
-            <h3 class="font-headline text-xl font-bold italic text-on-surface mt-1">Le Hublot</h3>
+            <span class="show-label font-label text-[10px] uppercase tracking-widest">Live occasionnel · FR</span>
+            <h3 class="font-headline text-xl font-bold italic text-on-surface">Veillée de Mouillage</h3>
           </div>
-          <span class="text-2xl shrink-0">🌐</span>
+          <span class="text-2xl">🌊</span>
         </div>
-        <p class="text-on-surface-variant text-sm leading-relaxed">Météo marine, routage et conseils de navigation. Le point hebdomadaire pour préparer votre traversée.</p>
-        <div class="text-xs text-outline font-label">20:00 — Dimanche</div>
+        <p class="text-on-surface-variant text-sm leading-relaxed mb-3">La table ronde du samedi soir. Des marins qui mouillent l'ancre et partagent histoires, conseils et bons plans autour d'un verre virtuel.</p>
+        <div class="flex items-center justify-between">
+          <span class="font-label text-xs text-outline">19:30 — Samedi (live occasionnel)</span>
+          <a href="podcasts.html#show-veillee" class="show-label font-label text-xs flex items-center gap-1 hover:opacity-70 transition-opacity">
+            <span class="material-symbols-outlined text-sm">podcasts</span> Écouter
+          </a>
+        </div>
       </div>
+
     </div>
   </section>
 
 </main>
-
-<!-- ═══ NOW PLAYING BAR ════════════════════════════════ -->
-<div class="now-playing-bar hidden md:flex items-center px-8 h-14">
-  <div class="max-w-7xl mx-auto w-full flex items-center justify-between gap-6">
-    <div class="flex items-center gap-3">
-      <span class="relative flex h-2.5 w-2.5 shrink-0">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
-      </span>
-      <span class="font-label text-xs uppercase tracking-widest text-secondary">En ce moment sur Radio Ponton</span>
-    </div>
-    <div class="flex-1 text-center">
-      <span class="font-headline text-base italic text-on-surface" id="now-playing-title">Radio Ponton — En direct</span>
-    </div>
-    <a href="index.html#player" class="shrink-0 flex items-center gap-2 bg-secondary/15 text-secondary px-4 py-1.5 rounded-full font-label text-xs hover:bg-secondary/25 transition-colors">
-      <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">play_circle</span>
-      Écouter
-    </a>
-  </div>
-</div>
 
 <!-- ═══ FOOTER ══════════════════════════════════════════ -->
 <footer class="bg-surface-container-lowest border-t border-outline-variant/10 pt-12 pb-8 px-6">
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
     <div class="space-y-3">
       <img src="logo-transparent.png" alt="Radio Ponton" class="h-10 object-contain opacity-70"/>
-      <p class="font-label text-xs text-outline/60">© 2024 Radio Ponton — Tous droits réservés</p>
+      <p class="font-label text-xs text-outline/60">© 2026 Radio Ponton — Tous droits réservés</p>
     </div>
     <div class="flex flex-wrap gap-x-8 gap-y-2">
       <a href="index.html" class="font-label text-sm text-on-surface-variant hover:text-secondary transition-colors">Accueil</a>
@@ -370,7 +342,7 @@
   </div>
 </footer>
 
-<!-- ═══ MOBILE BOTTOM NAV ══════════════════════════════ -->
+<!-- ═══ MOBILE BOTTOM NAV ═══════════════════════════════ -->
 <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 bg-surface-container-lowest/95 backdrop-blur-lg border-t border-outline-variant/10 flex items-center justify-around px-2">
   <a href="index.html" class="flex flex-col items-center gap-0.5 text-on-surface-variant/60 py-1 px-3">
     <span class="material-symbols-outlined text-xl">radio</span>
@@ -391,139 +363,201 @@
 </div>
 
 <script>
-  // Mobile nav
   document.getElementById('nav-toggle').addEventListener('click', () => {
     document.getElementById('mobile-menu').classList.toggle('hidden');
   });
 
-  // ── Schedule data ─────────────────────────────────────────
-  const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-  const DAYS_SHORT = ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'];
+  // ── Schedule data ──────────────────────────────────────
+  const DAYS      = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+  const DAYS_S    = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 
-  const vhf = [
-    { time:'06:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news', emoji:'📡' },
-    { time:'10:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news', emoji:'📡' },
-    { time:'14:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news', emoji:'📡' },
-    { time:'22:00', title:"Cap sur l'Info", host:'Flash actu · FR', tag:'news', emoji:'📡' },
+  const csi = [
+    { time:'02:00', dur:30, title:"Cap sur l'Info", sub:'Flash info · FR', tag:'news', emoji:'📡' },
+    { time:'06:00', dur:30, title:"Cap sur l'Info", sub:'Flash info · FR', tag:'news', emoji:'📡' },
+    { time:'10:00', dur:30, title:"Cap sur l'Info", sub:'Flash info · FR', tag:'news', emoji:'📡' },
+    { time:'14:00', dur:30, title:"Cap sur l'Info", sub:'Flash info · FR', tag:'news', emoji:'📡' },
+    { time:'18:00', dur:30, title:"Cap sur l'Info", sub:'Flash info · FR', tag:'news', emoji:'📡' },
+    { time:'22:00', dur:30, title:"Cap sur l'Info", sub:'Flash info · FR', tag:'news', emoji:'📡' },
   ];
-  const aPo  = [...vhf,
-    { time:'12:00', title:'À Poste', host:'Magazine nautique · FR', tag:'mag', emoji:'⚓' },
-    { time:'20:00', title:'À Poste', host:'Magazine nautique · EN', tag:'mag', emoji:'⚓' }
+  const aPo = [...csi,
+    { time:'12:00', dur:60, title:'À Poste', sub:'Magazine nautique · FR', tag:'mag', emoji:'⚓' },
+    { time:'20:00', dur:60, title:'À Poste', sub:'Magazine nautique · EN', tag:'mag', emoji:'⚓' },
   ];
-  const liv  = [...vhf,
-    { time:'12:00', title:'Livre de Bord', host:'Récit de navigation · FR', tag:'serie', emoji:'📓' },
-    { time:'20:00', title:'Livre de Bord', host:'Récit de navigation · EN', tag:'serie', emoji:'📓' }
+  const liv = [...csi,
+    { time:'12:00', dur:60, title:'Livre de Bord', sub:'Récit de navigation · FR', tag:'serie', emoji:'📓' },
+    { time:'20:00', dur:60, title:'Livre de Bord', sub:'Récit de navigation · EN', tag:'serie', emoji:'📓' },
   ];
-  const sam  = [...vhf,
-    { time:'12:00', title:'Livre de Bord', host:'Récit de navigation · FR', tag:'serie', emoji:'📓' },
-    { time:'19:30', title:'Veillée de Mouillage', host:'Table ronde marins · FR', tag:'live', emoji:'🌊' },
-    { time:'20:00', title:'Livre de Bord', host:'Récit de navigation · EN', tag:'serie', emoji:'📓' }
+  const sam = [...csi,
+    { time:'12:00', dur:60, title:'Livre de Bord', sub:'Récit de navigation · FR', tag:'serie', emoji:'📓' },
+    { time:'20:00', dur:60, title:'Livre de Bord', sub:'Récit de navigation · EN', tag:'serie', emoji:'📓' },
   ];
-  const dim  = [...vhf,
-    { time:'10:30', title:'Cap & Micro', host:'Interview marin · FR', tag:'interview', emoji:'🎤' },
-    { time:'17:30', title:'Helm & Mike', host:'Sailor interview · EN', tag:'interview', emoji:'🎙️' },
-    { time:'20:00', title:'Le Hublot', host:'Météo & routage · FR', tag:'meteo', emoji:'🌐' }
+  const dim = [...csi,
+    { time:'11:30', dur:60, title:'Cap & Micro',  sub:'Interview marin · FR',    tag:'interview', emoji:'🎤' },
+    { time:'16:30', dur:60, title:'Helm & Mike',  sub:'Sailor interview · EN',   tag:'interview', emoji:'🎙️' },
+    { time:'20:00', dur:15, title:'Le Hublot',    sub:'Météo marine · FR',       tag:'meteo',     emoji:'🌐' },
+    { time:'20:15', dur:15, title:'Le Hublot',    sub:'Marine weather · EN',     tag:'meteo',     emoji:'🌐' },
   ];
+  // 0=Lun … 6=Dim
   const PROG = [aPo, liv, aPo, liv, aPo, sam, dim];
 
-  // Week offset (0 = current week)
-  let weekOffset = 0;
+  // ── State ──────────────────────────────────────────────
+  const now = new Date();
+  const todayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+  let selectedDay = todayIdx;
 
-  function getMonday(offset) {
-    const today = new Date();
-    const dow = today.getDay();
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1) + offset * 7);
-    monday.setHours(0,0,0,0);
-    return monday;
+  // ── Helpers ────────────────────────────────────────────
+  function toMin(time) {
+    const [h, m] = time.split(':').map(Number);
+    return h * 60 + m;
+  }
+  function nowMin() {
+    return now.getHours() * 60 + now.getMinutes();
+  }
+  function tagClass(tag) {
+    return { news:'show-news', mag:'show-mag', serie:'show-serie', interview:'show-interview', meteo:'show-meteo', live:'show-live' }[tag] || 'show-news';
+  }
+  function durLabel(min) {
+    if (min < 60) return `${min} min`;
+    const h = Math.floor(min/60), m = min%60;
+    return m ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`;
   }
 
-  function buildFullGrid(offset) {
-    const el = document.getElementById('prog-full-grid');
-    if (!el) return;
+  // ── Get Monday of current week ─────────────────────────
+  function getMonday() {
+    const d = new Date(now);
+    const dow = d.getDay();
+    d.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
+    d.setHours(0,0,0,0);
+    return d;
+  }
 
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const now = new Date();
-    const nowMin = now.getHours() * 60 + now.getMinutes();
-    const monday = getMonday(offset);
+  // ── Current show for today ─────────────────────────────
+  function getCurrentShow() {
+    const nm = nowMin();
+    const slots = [...PROG[todayIdx]].sort((a,b) => toMin(a.time) - toMin(b.time));
+    for (const s of slots) {
+      const sm = toMin(s.time);
+      if (nm >= sm && nm < sm + s.dur) return s;
+    }
+    return null;
+  }
 
-    // Update week label
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    const fmt = (d) => d.getDate().toString().padStart(2,'0') + '/' + (d.getMonth()+1).toString().padStart(2,'0');
-    document.getElementById('week-label').textContent =
-      offset === 0 ? '▸ Semaine actuelle' : `${fmt(monday)} — ${fmt(sunday)}`;
+  // ── Render "En ce moment" ──────────────────────────────
+  function renderNow() {
+    const container = document.getElementById('now-section');
+    const show = getCurrentShow();
+    if (!show) { container.innerHTML = ''; return; }
 
-    el.innerHTML = `<div class="grid prog-full-cols" style="grid-template-columns:repeat(7,1fr);gap:4px;">
-      ${DAYS.map((day, i) => {
-        const dt = new Date(monday);
-        dt.setDate(monday.getDate() + i);
-        const isToday = dt.toDateString() === new Date().toDateString();
-        const dateStr = fmt(dt);
-        const slots = [...PROG[i]].sort((a,b) => a.time.localeCompare(b.time));
+    const endH = Math.floor((toMin(show.time) + show.dur) / 60);
+    const endM = (toMin(show.time) + show.dur) % 60;
+    const endTime = `${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')}`;
 
-        return `<div class="rounded-lg overflow-hidden ${isToday ? 'ring-1 ring-secondary/50 bg-surface-container' : 'bg-surface-container-low'}">
-          <div class="px-2 py-3 text-center ${isToday ? 'bg-secondary/20' : 'bg-surface-container-low/60'}">
-            <div class="font-label text-[10px] uppercase tracking-wider font-bold ${isToday ? 'text-secondary' : 'text-outline'}">${DAYS_SHORT[i]}</div>
-            <div class="font-headline text-lg ${isToday ? 'text-secondary' : 'text-on-surface-variant'}">${dt.getDate()}</div>
-            <div class="font-label text-[9px] text-outline/50">${dateStr}</div>
-            ${isToday ? '<div class="mt-1"><span class="font-label text-[8px] text-secondary uppercase tracking-wider bg-secondary/10 px-2 py-0.5 rounded-full">Aujourd\'hui</span></div>' : ''}
+    container.innerHTML = `
+      <div class="now-card rounded-xl p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="relative flex h-3 w-3 shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+            </span>
+            <span class="font-label text-xs uppercase tracking-widest text-secondary font-bold">En ce moment</span>
           </div>
-          ${slots.map(s => {
-            const [sh,sm] = s.time.split(':').map(Number);
-            const slotMin = sh * 60 + sm;
-            const isNow = isToday && nowMin >= slotMin && nowMin < slotMin + 120;
-            return `<div class="prog-slot-full px-2 py-2.5 border-t border-outline-variant/10 cursor-default transition-colors ${isNow ? 'bg-secondary/12' : ''}">
-              <div class="font-label text-[9px] text-outline/60 mb-0.5">${s.time}</div>
-              <div class="text-sm mb-0.5">${s.emoji}</div>
-              <div class="font-headline text-[10px] font-bold text-on-surface leading-tight">${s.title}</div>
-              <div class="font-label text-[8px] text-outline/60 mt-0.5 leading-tight">${s.host}</div>
-              ${isNow ? `<div class="flex items-center gap-1 mt-1.5">
-                <span class="inline-flex h-1.5 w-1.5 rounded-full bg-secondary dot-live"></span>
-                <span class="font-label text-[8px] text-secondary uppercase tracking-wider font-bold">En cours</span>
-              </div>` : ''}
-            </div>`;
-          }).join('')}
-        </div>`;
-      }).join('')}
-    </div>`;
-
-    // Update now playing
-    updateNowPlaying(now, nowMin);
+          <span class="font-label text-xs text-outline">${show.time} – ${endTime} · ${durLabel(show.dur)}</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-5xl md:text-6xl leading-none">${show.emoji}</span>
+          <div>
+            <h2 class="font-headline text-3xl md:text-4xl font-bold italic text-on-surface">${show.title}</h2>
+            <p class="${tagClass(show.tag)} font-label text-sm mt-1">${show.sub}</p>
+          </div>
+        </div>
+        <div class="mt-6 flex items-center gap-3">
+          <a href="index.html#player" class="flex items-center gap-2 bg-secondary text-on-secondary px-5 py-2.5 rounded-full font-label text-sm font-bold hover:bg-secondary/80 transition-colors">
+            <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">play_arrow</span>
+            Écouter le direct
+          </a>
+          <span class="font-label text-xs text-outline">Jusqu'à ${endTime}</span>
+        </div>
+      </div>
+    `;
   }
 
-  function updateNowPlaying(now, nowMin) {
-    const dow = now.getDay();
-    const dayIdx = dow === 0 ? 6 : dow - 1;
-    const daySlots = [...PROG[dayIdx]].sort((a,b) => a.time.localeCompare(b.time));
-    let currentShow = null;
-    for (const s of daySlots) {
-      const [sh,sm] = s.time.split(':').map(Number);
-      const slotMin = sh * 60 + sm;
-      if (nowMin >= slotMin && nowMin < slotMin + 120) { currentShow = s; break; }
-    }
-    const el = document.getElementById('now-playing-title');
-    if (el && currentShow) {
-      el.textContent = `${currentShow.emoji} ${currentShow.title} — ${currentShow.host}`;
-    }
+  // ── Render day tabs ────────────────────────────────────
+  function renderTabs() {
+    const monday = getMonday();
+    const container = document.getElementById('day-tabs');
+    container.innerHTML = DAYS_S.map((d, i) => {
+      const dt = new Date(monday);
+      dt.setDate(monday.getDate() + i);
+      const isToday = i === todayIdx;
+      const isSelected = i === selectedDay;
+      return `<button
+        class="day-tab ${isSelected ? 'active' : ''} flex flex-col items-center gap-0.5 px-4 py-2.5 rounded-xl border border-outline-variant/20 font-label cursor-pointer shrink-0"
+        data-day="${i}" aria-pressed="${isSelected}">
+        <span class="text-xs uppercase tracking-widest font-bold">${d}</span>
+        <span class="text-lg font-headline font-bold">${dt.getDate()}</span>
+        ${isToday ? '<span class="text-[9px] uppercase tracking-widest text-secondary">Aujourd\'hui</span>' : ''}
+      </button>`;
+    }).join('');
+
+    container.querySelectorAll('.day-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedDay = parseInt(btn.dataset.day);
+        renderTabs();
+        renderTimeline();
+        // Scroll tab into view on mobile
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+    });
   }
 
-  // Initial build
-  buildFullGrid(0);
+  // ── Render timeline ────────────────────────────────────
+  function renderTimeline() {
+    const container = document.getElementById('timeline');
+    const nm = nowMin();
+    const isToday = selectedDay === todayIdx;
+    const slots = [...PROG[selectedDay]].sort((a,b) => toMin(a.time) - toMin(b.time));
 
-  // Week navigation
-  document.getElementById('btn-prev').addEventListener('click', () => {
-    weekOffset--;
-    buildFullGrid(weekOffset);
-  });
-  document.getElementById('btn-next').addEventListener('click', () => {
-    weekOffset = 0;
-    buildFullGrid(0);
-  });
+    container.innerHTML = slots.map(s => {
+      const sm = toMin(s.time);
+      const isNow  = isToday && nm >= sm && nm < sm + s.dur;
+      const isPast = isToday && nm >= sm + s.dur;
+      const endH   = Math.floor((sm + s.dur) / 60);
+      const endM   = (sm + s.dur) % 60;
+      const endTime = `${String(endH).padStart(2,'0')}:${String(endM).padStart(2,'0')}`;
+      const tc = tagClass(s.tag);
+
+      return `<div class="slot-card ${tc} ${isNow ? 'is-now' : ''} ${isPast ? 'is-past' : ''} rounded-r-xl bg-surface-container-low px-5 py-4 flex items-center gap-5">
+        <div class="shrink-0 w-14 text-right">
+          <div class="font-label text-base font-bold ${isNow ? 'text-secondary' : 'text-on-surface'}">${s.time}</div>
+          <div class="font-label text-[10px] text-outline">→ ${endTime}</div>
+        </div>
+        <div class="text-2xl shrink-0">${s.emoji}</div>
+        <div class="flex-1 min-w-0">
+          <div class="font-headline text-lg font-bold text-on-surface leading-tight">${s.title}</div>
+          <div class="show-label font-label text-xs mt-0.5">${s.sub}</div>
+        </div>
+        <div class="shrink-0 text-right space-y-1">
+          <div class="font-label text-xs text-outline">${durLabel(s.dur)}</div>
+          ${isNow ? `<div class="flex items-center gap-1 justify-end">
+            <span class="inline-flex h-2 w-2 rounded-full bg-secondary dot-live"></span>
+            <span class="font-label text-[10px] text-secondary uppercase tracking-wider font-bold">En cours</span>
+          </div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Init ───────────────────────────────────────────────
+  renderNow();
+  renderTabs();
+  renderTimeline();
 
   // Auto-refresh every minute
-  setInterval(() => buildFullGrid(weekOffset), 60000);
+  setInterval(() => {
+    renderNow();
+    renderTimeline();
+  }, 60000);
 </script>
 </body>
 </html>
