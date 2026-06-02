@@ -14,7 +14,7 @@
   const css = `
     #rp-bar {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
-      background: linear-gradient(90deg, rgba(180,110,10,0.93) 0%, rgba(235,158,40,0.90) 50%, rgba(180,110,10,0.93) 100%);
+      background: linear-gradient(90deg, rgba(155,95,5,0.72) 0%, rgba(210,140,25,0.68) 50%, rgba(155,95,5,0.72) 100%);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-top: 1px solid rgba(255,200,80,0.35);
@@ -132,7 +132,7 @@
     <span id="rp-station">RADIO PONTON</span>
     <div id="rp-np-wrap"><span id="rp-np">En direct 24h/24</span></div>
     <button id="rp-play" title="Play / Pause" aria-label="Play">
-      <svg id="rp-play-icon" width="14" height="14" viewBox="0 0 24 24" fill="#0b1422">
+      <svg id="rp-play-icon" width="14" height="14" viewBox="0 0 24 24" fill="#ffb95d">
         <polygon points="5,3 19,12 5,21"/>
       </svg>
     </button>
@@ -166,9 +166,9 @@
   const hideBtn   = document.getElementById('rp-hide-btn');
 
   // ── Icons ────────────────────────────────────────────────────────────────
-  const ICON_PLAY   = '<polygon points="5,3 19,12 5,21"/>';
-  const ICON_PAUSE  = '<rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/>';
-  const ICON_SPIN   = '<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#0b1422" stroke-width="2.5" stroke-linecap="round" fill="none"/>';
+  const ICON_PLAY   = '<polygon points="5,3 19,12 5,21" fill="#ffb95d"/>';
+  const ICON_PAUSE  = '<rect x="5" y="3" width="4" height="18" rx="1" fill="#ffb95d"/><rect x="15" y="3" width="4" height="18" rx="1" fill="#ffb95d"/>';
+  const ICON_SPIN   = '<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#ffb95d" stroke-width="2.5" stroke-linecap="round" fill="none"/>';
 
   function setPlayIcon(state) {
     if (state === 'loading') {
