@@ -14,88 +14,109 @@
   const css = `
     #rp-bar {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
-      background: rgba(11,20,34,0.97);
-      border-top: 1px solid #222a39;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: flex; align-items: center; gap: 12px;
-      padding: 0 16px;
-      height: 56px;
+      background: linear-gradient(90deg, rgba(180,110,10,0.93) 0%, rgba(235,158,40,0.90) 50%, rgba(180,110,10,0.93) 100%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(255,200,80,0.35);
+      display: flex; align-items: center; gap: 14px;
+      padding: 0 18px;
+      height: 58px;
       font-family: 'Space Grotesk', sans-serif;
-      color: #dae3f7;
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+      color: #0b1422;
+      box-shadow: 0 -4px 28px rgba(199,130,19,0.45);
       transition: transform 0.3s ease;
     }
     #rp-bar.hidden { transform: translateY(100%); }
 
     #rp-live-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #434653; flex-shrink: 0;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(11,20,34,0.35); flex-shrink: 0;
       transition: background 0.3s;
     }
-    #rp-live-dot.active { background: #ef4444; animation: rp-pulse 1.5s infinite; }
-    @keyframes rp-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    #rp-live-dot.active {
+      background: #c0392b;
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.25);
+      animation: rp-pulse 1.5s infinite;
+    }
+    @keyframes rp-pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
     #rp-station {
-      font-size: 12px; font-weight: 600;
-      color: #ffb95d; letter-spacing: 0.5px;
+      font-size: 13px; font-weight: 700;
+      color: #0b1422; letter-spacing: 0.8px;
       flex-shrink: 0; white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.15);
     }
 
     #rp-np-wrap {
       flex: 1; overflow: hidden; min-width: 0;
     }
     #rp-np {
-      font-size: 12px; color: #8d909e;
+      font-size: 12px; font-weight: 500;
+      color: rgba(11,20,34,0.75);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     #rp-play {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: linear-gradient(135deg, #ffb95d, #c78213);
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #0b1422;
       border: none; cursor: pointer; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 0 12px rgba(255,185,93,0.35);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
     }
-    #rp-play:hover { transform: scale(1.08); box-shadow: 0 0 18px rgba(255,185,93,0.5); }
+    #rp-play:hover { transform: scale(1.08); box-shadow: 0 4px 16px rgba(0,0,0,0.45); }
     #rp-play:active { transform: scale(0.94); }
     #rp-play svg { pointer-events: none; }
 
     #rp-popup-btn {
-      font-size: 11px; font-weight: 500;
-      color: #434653; white-space: nowrap;
-      background: none; border: 1px solid #2c3544;
-      border-radius: 4px; padding: 4px 10px;
+      display: flex; align-items: center; gap: 7px;
+      background: #0b1422;
+      color: #ffb95d;
+      border: none;
+      border-radius: 22px;
+      padding: 8px 16px;
+      font-size: 12px; font-weight: 600;
       cursor: pointer; flex-shrink: 0;
-      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+      letter-spacing: 0.3px;
     }
-    #rp-popup-btn:hover { color: #ffb95d; border-color: #ffb95d; }
+    #rp-popup-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      background: #131c2a;
+    }
+    #rp-popup-btn:active { transform: translateY(0); }
+    #rp-popup-btn .rp-popup-icon {
+      font-size: 15px; line-height: 1;
+    }
 
     #rp-hide-btn {
-      background: none; border: none; cursor: pointer;
-      color: #434653; font-size: 16px; flex-shrink: 0;
-      line-height: 1; padding: 4px;
-      transition: color 0.2s;
+      background: rgba(11,20,34,0.2); border: none; cursor: pointer;
+      color: rgba(11,20,34,0.6); font-size: 13px; flex-shrink: 0;
+      line-height: 1; padding: 5px 7px; border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
     }
-    #rp-hide-btn:hover { color: #dae3f7; }
+    #rp-hide-btn:hover { background: rgba(11,20,34,0.35); color: #0b1422; }
 
     #rp-show-btn {
-      position: fixed; bottom: 12px; right: 16px; z-index: 9998;
-      width: 44px; height: 44px; border-radius: 50%;
+      position: fixed; bottom: 14px; right: 18px; z-index: 9998;
+      width: 46px; height: 46px; border-radius: 50%;
       background: linear-gradient(135deg, #ffb95d, #c78213);
       border: none; cursor: pointer;
       display: none; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(255,185,93,0.45);
+      box-shadow: 0 4px 20px rgba(199,130,19,0.55);
       transition: transform 0.15s;
     }
     #rp-show-btn.visible { display: flex; }
     #rp-show-btn:hover { transform: scale(1.08); }
     #rp-show-btn svg { pointer-events: none; }
 
-    @media (max-width: 480px) {
-      #rp-popup-btn { display: none; }
-      #rp-station { font-size: 11px; }
+    @media (max-width: 520px) {
+      #rp-popup-btn span.rp-popup-label { display: none; }
+      #rp-popup-btn { padding: 8px 10px; border-radius: 50%; }
+      #rp-station { font-size: 12px; }
     }
   `;
 
@@ -115,7 +136,10 @@
         <polygon points="5,3 19,12 5,21"/>
       </svg>
     </button>
-    <button id="rp-popup-btn" title="Ouvrir le player dans une fenêtre séparée">⧉ Popup</button>
+    <button id="rp-popup-btn" title="Ouvrir le player dans une fenêtre séparée — reste actif même si vous changez d'onglet">
+      <span class="rp-popup-icon">⧉</span>
+      <span class="rp-popup-label">Garder en fond</span>
+    </button>
     <button id="rp-hide-btn" title="Masquer la barre" aria-label="Masquer">✕</button>
   `;
   document.body.appendChild(bar);
