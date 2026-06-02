@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Radio Ponton — Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0b1422;
+      color: #dae3f7;
+      font-family: 'Space Grotesk', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .container {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      width: 32px;
+      height: 32px;
+      background: #2b5fc7;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .station-info { flex: 1; min-width: 0; }
+    .station-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #dae3f7;
+      letter-spacing: 0.5px;
+    }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: #8d909e;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #8d909e;
+      transition: background 0.3s;
+    }
+    .live-dot.active { background: #ef4444; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+    /* Now playing */
+    .now-playing {
+      background: #131c2a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-height: 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .np-label {
+      font-size: 9px;
+      color: #434653;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .np-text {
+      font-size: 12px;
+      color: #c3c6d5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .np-text.scrolling {
+      animation: marquee 12s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .play-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffb95d, #c78213);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s, opacity 0.15s;
+      box-shadow: 0 0 16px rgba(255,185,93,0.4);
+    }
+    .play-btn:hover { transform: scale(1.06); }
+    .play-btn:active { transform: scale(0.96); }
+    .play-btn.loading { opacity: 0.6; }
+    .play-icon {
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 8px 0 8px 14px;
+      border-color: transparent transparent transparent #0b1422;
+      margin-left: 3px;
+    }
+    .pause-icon {
+      display: flex; gap: 4px;
+    }
+    .pause-bar {
+      width: 4px; height: 14px;
+      background: #0b1422;
+      border-radius: 2px;
+    }
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .volume-wrap { flex: 1; display: flex; align-items: center; gap: 8px; }
+    .vol-icon { color: #434653; font-size: 14px; flex-shrink: 0; }
+    input[type=range] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 3px;
+      border-radius: 2px;
+      background: #2c3544;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #ffb95d;
+      cursor: pointer;
+    }
+    .listeners {
+      font-size: 10px;
+      color: #434653;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">⚓</div>
+      <div class="station-info">
+        <div class="station-name">RADIO PONTON</div>
+        <div class="live-badge">
+          <div class="live-dot" id="liveDot"></div>
+          <span id="liveLabel">EN DIRECT</span>
+        </div>
+      </div>
+      <div class="listeners" id="listeners"></div>
+    </div>
+
+    <!-- Now playing -->
+    <div class="now-playing">
+      <div class="np-label">À l'antenne</div>
+      <div class="np-text" id="npText">Radio Ponton · En direct</div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="play-btn" id="playBtn" title="Play / Pause">
+        <div class="play-icon" id="playIcon"></div>
+      </button>
+      <div class="volume-wrap">
+        <span class="vol-icon">🔈</span>
+        <input type="range" id="volume" min="0" max="1" step="0.02" value="0.8"/>
+        <span class="vol-icon">🔊</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const STREAM = 'https://radio.radioponton.net:8000/radio.mp3';
+    const API    = 'https://radio.radioponton.net/api/nowplaying/radio-ponton';
+
+    const audio   = new Audio();
+    audio.preload = 'none';
+    audio.volume  = 0.8;
+
+    const playBtn    = document.getElementById('playBtn');
+    const playIcon   = document.getElementById('playIcon');
+    const npText     = document.getElementById('npText');
+    const liveDot    = document.getElementById('liveDot');
+    const liveLabel  = document.getElementById('liveLabel');
+    const volSlider  = document.getElementById('volume');
+    const listenersEl= document.getElementById('listeners');
+
+    let isPlaying = false;
+    let isLoading = false;
+
+    function setIcon(state) {
+      if (state === 'loading') {
+        playIcon.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0b1422" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>';
+        playIcon.className = 'spin';
+      } else if (state === 'pause') {
+        playIcon.innerHTML = '<div class="pause-icon"><div class="pause-bar"></div><div class="pause-bar"></div></div>';
+        playIcon.className = '';
+      } else {
+        playIcon.innerHTML = '<div class="play-icon"></div>';
+        playIcon.className = '';
+      }
+    }
+
+    function setPlaying(v) {
+      isPlaying = v;
+      isLoading = false;
+      playBtn.classList.toggle('loading', false);
+      liveDot.classList.toggle('active', v);
+      liveLabel.textContent = v ? 'EN DIRECT' : 'EN DIRECT';
+      setIcon(v ? 'pause' : 'play');
+    }
+
+    playBtn.addEventListener('click', function () {
+      if (isLoading) return;
+      if (isPlaying) {
+        audio.pause(); audio.src = '';
+        setPlaying(false);
+      } else {
+        isLoading = true;
+        setIcon('loading');
+        playBtn.classList.add('loading');
+        audio.src = STREAM + '?_=' + Date.now();
+        audio.volume = parseFloat(volSlider.value);
+        audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      }
+    });
+
+    volSlider.addEventListener('input', () => { audio.volume = parseFloat(volSlider.value); });
+    audio.addEventListener('error', () => setPlaying(false));
+
+    // Now playing poll
+    async function pollNowPlaying() {
+      try {
+        const r = await fetch(API);
+        if (!r.ok) return;
+        const d = await r.json();
+        const np = d.now_playing?.song || {};
+        const live = d.live || {};
+        const count = d.listeners?.current || 0;
+        const title = np.title || '';
+        const artist = np.artist || '';
+        const text = live.is_live
+          ? (live.streamer_name || 'Radio Ponton') + ' · En direct'
+          : artist ? `${artist} — ${title}` : title || 'Radio Ponton · En direct';
+        npText.textContent = text + (text.length > 35 ? '   |   ' + text : '');
+        npText.className = 'np-text' + (text.length > 35 ? ' scrolling' : '');
+        listenersEl.textContent = count > 0 ? `${count} 🎧` : '';
+      } catch {}
+    }
+    pollNowPlaying();
+    setInterval(pollNowPlaying, 15000);
+
+    // Démarrer automatiquement si l'utilisateur a déjà interagi (page ouverte via bouton)
+    document.addEventListener('click', function autoStart() {
+      if (!isPlaying && !isLoading) playBtn.click();
+      document.removeEventListener('click', autoStart);
+    }, { once: true });
+  </script>
+</body>
+</html>
