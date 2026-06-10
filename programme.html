@@ -180,6 +180,10 @@
       <p class="text-on-surface-variant text-lg max-w-2xl leading-relaxed">
         La grille complète des émissions Radio Ponton — chaque semaine, la même horloge, la même mer.
       </p>
+      <p class="font-label text-xs text-outline mt-3 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">schedule</span>
+        Horaires en heure de Paris
+      </p>
     </div>
   </section>
 
@@ -400,9 +404,24 @@
   // 0=Lun … 6=Dim
   const PROG = [aPo, liv, aPo, liv, aPo, sam, dim];
 
+  // ── Paris timezone helper ──────────────────────────────
+  function getParisComponents() {
+    const now = new Date();
+    const fmt = (opts) => new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Paris', hour12: false, ...opts }).format(now);
+    const hours = parseInt(fmt({ hour: '2-digit' })) % 24;
+    const minutes = parseInt(fmt({ minute: '2-digit' }));
+    const day = parseInt(fmt({ day: '2-digit' }));
+    const month = parseInt(fmt({ month: '2-digit' })) - 1;
+    const year = parseInt(fmt({ year: 'numeric' }));
+    const weekdayLong = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Paris', weekday: 'long' }).format(now);
+    const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const dayOfWeek = weekdays.indexOf(weekdayLong);
+    return { hours, minutes, day, month, year, dayOfWeek };
+  }
+
   // ── State ──────────────────────────────────────────────
-  const now = new Date();
-  const todayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+  const paris = getParisComponents();
+  const todayIdx = paris.dayOfWeek === 0 ? 6 : paris.dayOfWeek - 1;
   let selectedDay = todayIdx;
 
   // ── Helpers ────────────────────────────────────────────
@@ -411,7 +430,8 @@
     return h * 60 + m;
   }
   function nowMin() {
-    return now.getHours() * 60 + now.getMinutes();
+    const p = getParisComponents();
+    return p.hours * 60 + p.minutes;
   }
   function tagClass(tag) {
     return { news:'show-news', mag:'show-mag', serie:'show-serie', interview:'show-interview', meteo:'show-meteo', live:'show-live' }[tag] || 'show-news';
@@ -422,13 +442,13 @@
     return m ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`;
   }
 
-  // ── Get Monday of current week ─────────────────────────
+  // ── Get Monday of current Paris week ──────────────────
   function getMonday() {
-    const d = new Date(now);
-    const dow = d.getDay();
-    d.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
-    d.setHours(0,0,0,0);
-    return d;
+    const p = getParisComponents();
+    const offsetFromMonday = p.dayOfWeek === 0 ? 6 : p.dayOfWeek - 1;
+    const monday = new Date(Date.UTC(p.year, p.month, p.day));
+    monday.setUTCDate(monday.getUTCDate() - offsetFromMonday);
+    return monday;
   }
 
   // ── Current show for today ─────────────────────────────
@@ -488,14 +508,14 @@
     const container = document.getElementById('day-tabs');
     container.innerHTML = DAYS_S.map((d, i) => {
       const dt = new Date(monday);
-      dt.setDate(monday.getDate() + i);
+      dt.setUTCDate(monday.getUTCDate() + i);
       const isToday = i === todayIdx;
       const isSelected = i === selectedDay;
       return `<button
         class="day-tab ${isSelected ? 'active' : ''} flex flex-col items-center gap-0.5 px-4 py-2.5 rounded-xl border border-outline-variant/20 font-label cursor-pointer shrink-0"
         data-day="${i}" aria-pressed="${isSelected}">
         <span class="text-xs uppercase tracking-widest font-bold">${d}</span>
-        <span class="text-lg font-headline font-bold">${dt.getDate()}</span>
+        <span class="text-lg font-headline font-bold">${dt.getUTCDate()}</span>
         ${isToday ? '<span class="text-[9px] uppercase tracking-widest text-secondary">Aujourd\'hui</span>' : ''}
       </button>`;
     }).join('');
