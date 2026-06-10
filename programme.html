@@ -84,6 +84,10 @@
     @keyframes pulse-amber { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:0.4;transform:scale(0.7); } }
     .dot-live { animation: pulse-amber 1.8s ease-in-out infinite; }
 
+    @keyframes tz-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .tz-track { animation: tz-marquee 40s linear infinite; }
+    .tz-track:hover { animation-play-state: paused; }
+
     /* Show type colors */
     .show-news     { --c: #8d909e; }
     .show-mag      { --c: #b1c5ff; }
@@ -186,6 +190,46 @@
       </p>
     </div>
   </section>
+
+  <!-- ═══ TIMEZONE TICKER ════════════════════════════════ -->
+  <div class="overflow-hidden border-y border-secondary/30" style="background:linear-gradient(90deg,rgba(255,185,93,0.10) 0%,rgba(43,95,199,0.08) 50%,rgba(255,185,93,0.10) 100%)">
+    <div class="tz-track flex items-center whitespace-nowrap py-2.5 select-none">
+      <!-- set 1 -->
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <!-- set 2 — duplicate pour boucle seamless -->
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+      <span class="flex items-center gap-2 px-10 font-label text-xs font-bold uppercase tracking-widest text-secondary"><span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">schedule</span>Horaires en heure de Paris</span>
+      <span class="text-secondary/30 font-bold text-base">⚓</span>
+    </div>
+  </div>
 
   <!-- ═══ EN CE MOMENT ══════════════════════════════════ -->
   <div class="max-w-4xl mx-auto px-6 mb-10" id="now-section"></div>
