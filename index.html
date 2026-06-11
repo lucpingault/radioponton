@@ -105,6 +105,20 @@
 
     .vesta-glow { box-shadow: 0 0 60px rgba(255,185,93,0.12), 0 20px 60px rgba(0,0,0,0.6); }
 
+    /* ── Fondu enchaîné hero ↔ In Memoriam ── */
+    @keyframes hero-cycle {
+      0%, 30%  { opacity: 1; pointer-events: auto; }
+      40%, 88% { opacity: 0; pointer-events: none; }
+      98%, 100%{ opacity: 1; pointer-events: auto; }
+    }
+    @keyframes dalin-cycle {
+      0%, 30%  { opacity: 0; pointer-events: none; }
+      40%, 88% { opacity: 1; pointer-events: auto; }
+      98%, 100%{ opacity: 0; pointer-events: none; }
+    }
+    .layer-hero  { animation: hero-cycle  16s ease-in-out infinite; }
+    .layer-dalin { animation: dalin-cycle 16s ease-in-out infinite; opacity: 0; }
+
     /* Slot hover */
     .prog-slot:hover { background: rgba(255,185,93,0.05); }
 
@@ -200,89 +214,84 @@
     <!-- Ambient beam -->
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-2/3 z-0" style="background: linear-gradient(180deg, transparent 0%, rgba(255,185,93,0.12) 40%, transparent 100%); transform: translateX(-50%) rotate(8deg) scaleX(120);"></div>
 
-    <!-- Content -->
-    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-8 fade-up" style="animation-delay:0.1s">
-      <div class="flex justify-center mb-6">
-        <img src="logo-transparent.png" alt="Radio Ponton" class="h-36 md:h-52 object-contain drop-shadow-2xl"/>
+    <!-- ── LAYER A : Hero Radio Ponton ── -->
+    <div class="layer-hero absolute inset-0 z-10 flex items-center justify-center px-6">
+      <div class="max-w-4xl mx-auto text-center space-y-8">
+        <div class="flex justify-center mb-6">
+          <img src="logo-transparent.png" alt="Radio Ponton" class="h-36 md:h-52 object-contain drop-shadow-2xl"/>
+        </div>
+        <h1 class="font-headline text-5xl md:text-7xl font-bold text-on-surface leading-tight tracking-tight">
+          Embarquez sur les<br/><em class="text-secondary">Ondes du Ponton</em>
+        </h1>
+        <p class="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto font-light leading-relaxed">
+          La webradio des gens de mer. Émissions nautiques, reportages &amp; interviews depuis les pontons du monde entier — bilingue FR/EN.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
+          <a href="#player" id="hero-play-btn" class="bg-primary-container text-on-primary-container px-9 py-4 rounded-md font-bold text-base hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2.5 shadow-lg shadow-primary-container/20">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">play_circle</span>
+            ÉCOUTER LE LIVE
+          </a>
+          <a href="podcasts.html" class="bg-surface-variant text-on-surface px-9 py-4 rounded-md font-bold text-base hover:bg-surface-container-highest transition-all flex items-center gap-2.5">
+            <span class="material-symbols-outlined">podcasts</span>
+            NOS PODCASTS
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LAYER B : In Memoriam — Charlie Dalin ── -->
+    <div class="layer-dalin absolute inset-0 z-10 flex items-center overflow-hidden">
+
+      <!-- Photo fond gauche -->
+      <div class="absolute inset-0 z-0">
+        <img src="27853358.jpeg" alt="" aria-hidden="true"
+          style="width:100%; height:100%; object-fit:cover; object-position:center center; filter:grayscale(12%) contrast(1.05);"/>
+        <!-- Dégradé gauche→droite : photo visible à gauche, fond sombre à droite -->
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(11,20,34,0.1) 0%, rgba(11,20,34,0.55) 40%, rgba(11,20,34,0.97) 65%, #0b1422 100%);"></div>
+        <!-- Vignette haut/bas -->
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,20,34,0.6) 0%,transparent 20%,transparent 75%,rgba(11,20,34,0.8) 100%);"></div>
       </div>
 
-      <h1 class="font-headline text-5xl md:text-7xl font-bold text-on-surface leading-tight tracking-tight">
-        Embarquez sur les<br/><em class="text-secondary">Ondes du Ponton</em>
-      </h1>
+      <!-- Texte positionné à droite -->
+      <div class="relative z-10 w-full max-w-7xl mx-auto px-6 flex justify-end">
+        <div class="w-full md:w-1/2 space-y-5 py-12">
 
-      <p class="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto font-light leading-relaxed">
-        La webradio des gens de mer. Émissions nautiques, reportages &amp; interviews depuis les pontons du monde entier — bilingue FR/EN.
-      </p>
+          <!-- Badge -->
+          <div class="flex items-center gap-3">
+            <span class="font-label text-[10px] uppercase tracking-[0.22em] font-bold" style="color:rgba(180,185,205,0.65);">⚓&nbsp;&nbsp;In Memoriam</span>
+            <div class="h-px w-12" style="background:rgba(180,185,205,0.2);"></div>
+            <span class="font-label text-[10px] uppercase tracking-widest" style="color:rgba(180,185,205,0.4);">10–11 juin 2026</span>
+          </div>
 
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
-        <a href="#player" id="hero-play-btn" class="bg-primary-container text-on-primary-container px-9 py-4 rounded-md font-bold text-base hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2.5 shadow-lg shadow-primary-container/20">
-          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">play_circle</span>
-          ÉCOUTER LE LIVE
-        </a>
-        <a href="podcasts.html" class="bg-surface-variant text-on-surface px-9 py-4 rounded-md font-bold text-base hover:bg-surface-container-highest transition-all flex items-center gap-2.5">
-          <span class="material-symbols-outlined">podcasts</span>
-          NOS PODCASTS
-        </a>
+          <!-- Nom -->
+          <div>
+            <h2 class="font-headline text-4xl md:text-5xl font-bold text-on-surface leading-tight">Charlie Dalin</h2>
+            <p class="font-body text-base mt-1" style="color:rgba(180,185,205,0.5);">
+              1984 – 2026 &nbsp;·&nbsp; Vainqueur du Vendée Globe 2024-2025 &nbsp;·&nbsp; Marin de l'année 2025
+            </p>
+          </div>
+
+          <!-- Texte -->
+          <p class="font-body text-base md:text-lg leading-relaxed" style="color:rgba(218,227,247,0.82);">
+            Le 14 janvier 2025, Charlie Dalin franchissait la ligne des Sables-d'Olonne à bord de <em>MACIF Santé Prévoyance</em>, pulvérisant le record du Vendée Globe de neuf jours. Ce que le monde de la voile ignorait encore&nbsp;: il prenait chaque matin, depuis le départ, un comprimé d'immunothérapie — diagnostiqué d'un cancer en 2023, il avait gardé le secret et choisi de prendre la mer quand même.
+          </p>
+          <p class="font-body text-sm leading-relaxed" style="color:rgba(218,227,247,0.55);">
+            <em>«&nbsp;Si d'autres sportifs y arrivent, pourquoi pas moi&nbsp;?&nbsp;»</em> — Sacré Marin de l'année 2025 à l'unanimité, il s'est éteint à Quimper, à 42 ans. La mer et ses gens lui doivent une immense reconnaissance.
+          </p>
+
+          <!-- Crédit -->
+          <div class="pt-2">
+            <span class="font-label text-[10px] uppercase tracking-widest" style="color:rgba(180,185,205,0.25);">Radio Ponton · Hommage</span>
+          </div>
+
+        </div>
       </div>
     </div>
 
     <!-- Scroll hint -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 opacity-40">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 opacity-40">
       <span class="font-label text-[10px] uppercase tracking-widest text-outline">Défiler</span>
       <span class="material-symbols-outlined text-outline animate-bounce text-sm">keyboard_arrow_down</span>
-    </div>
-  </section>
-
-  <!-- ═══ IN MEMORIAM — CHARLIE DALIN ════════════════════ -->
-  <section class="max-w-6xl mx-auto px-6 pb-6 relative z-30">
-    <div class="relative overflow-hidden rounded-xl" style="background: #0d1825; border: 1px solid rgba(180,185,205,0.12); border-left: 3px solid rgba(180,185,205,0.45);">
-      <div class="absolute top-0 left-0 right-0 h-px" style="background: linear-gradient(90deg, transparent, rgba(180,185,205,0.2), transparent);"></div>
-      <div class="grid md:grid-cols-12 gap-0">
-
-        <!-- Photo -->
-        <div class="md:col-span-4 overflow-hidden" style="min-height: 280px; position: relative;">
-          <img
-            src="27853358.jpeg"
-            alt="Charlie Dalin avec son fils Oscar à l'arrivée du Vendée Globe, janvier 2025"
-            style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: grayscale(10%) contrast(1.05);"
-          />
-          <div style="position: absolute; inset: 0; background: linear-gradient(90deg, transparent 65%, #0d1825 100%);"></div>
-          <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 70%, #0d1825 100%);"></div>
-        </div>
-
-        <!-- Texte -->
-        <div class="md:col-span-8 px-7 py-7 flex flex-col justify-center gap-5">
-
-          <div class="flex items-center gap-3">
-            <span class="font-label text-[10px] uppercase tracking-[0.2em] font-bold" style="color: rgba(180,185,205,0.6);">⚓&nbsp;&nbsp;In Memoriam</span>
-            <div class="h-px flex-1" style="background: rgba(180,185,205,0.15);"></div>
-            <span class="font-label text-[10px] uppercase tracking-widest" style="color: rgba(180,185,205,0.4);">10–11 juin 2026</span>
-          </div>
-
-          <div>
-            <h2 class="font-headline text-2xl md:text-3xl font-bold text-on-surface leading-tight">
-              Charlie Dalin
-              <span class="font-body font-normal text-lg" style="color: rgba(180,185,205,0.45); margin-left: 0.5rem;">1984 – 2026</span>
-            </h2>
-            <p class="font-label text-sm mt-1.5" style="color: rgba(180,185,205,0.5);">
-              Vainqueur du Vendée Globe 2024-2025 &nbsp;·&nbsp; Record absolu : 64 jours, 19 heures &nbsp;·&nbsp; Marin de l'année 2025
-            </p>
-          </div>
-
-          <p class="font-body text-sm md:text-base leading-relaxed" style="color: rgba(218,227,247,0.78);">
-            Le 14 janvier 2025, Charlie Dalin franchissait la ligne des Sables-d'Olonne à bord de <em>MACIF Santé Prévoyance</em>, pulvérisant le record du Vendée Globe de neuf jours. Ce que le monde de la voile ignorait encore : il prenait chaque matin, depuis le départ, un comprimé d'immunothérapie — diagnostiqué d'un cancer en 2023, il avait gardé le secret et choisi de prendre la mer quand même. <em>« Si d'autres sportifs y arrivent, pourquoi pas moi ? »</em> Il appellera cette victoire une double victoire : contre la mer et contre la maladie.
-          </p>
-          <p class="font-body text-sm leading-relaxed" style="color: rgba(218,227,247,0.55);">
-            Sacré Marin de l'année 2025 à l'unanimité, architecte naval de formation, né au Havre et installé à Concarneau, Charlie Dalin s'est éteint dans la nuit du 10 au 11 juin 2026 à Quimper, à 42 ans. La mer et ses gens lui doivent une immense reconnaissance.
-          </p>
-
-          <div class="flex items-center justify-between pt-1">
-            <div class="h-px flex-1 mr-6" style="background: rgba(180,185,205,0.07);"></div>
-            <span class="font-label text-[10px] uppercase tracking-widest shrink-0" style="color: rgba(180,185,205,0.3);">Radio Ponton · Hommage</span>
-          </div>
-
-        </div>
-      </div>
     </div>
   </section>
 
